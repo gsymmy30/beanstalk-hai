@@ -4,8 +4,7 @@ from utils.prompts import StoryGenerationPrompts
 
 class StoryGenerator:
     """
-    Core story generation agent that creates engaging, varied bedtime stories
-    with proper titles and morals.
+    Core story generation agent that creates engaging bedtime stories.
     """
     
     def __init__(self, llm_call_function: Callable):
@@ -29,7 +28,7 @@ class StoryGenerator:
         generation_prompt = StoryGenerationPrompts.complete_story_prompt(story_request)
         
         try:
-            response = self.call_model(generation_prompt, max_tokens=1200, temperature=0.7)
+            response = self.call_model(generation_prompt, max_tokens=1400, temperature=0.7)
             result = json.loads(response)
             
             # Ensure we have all required fields
@@ -41,35 +40,6 @@ class StoryGenerator:
         except (json.JSONDecodeError, ValueError, KeyError):
             # Fallback story if LLM fails
             return self._create_fallback_story(story_request)
-    
-    def refine_story(self, original_story: Dict, refinement_instructions: str) -> Dict:
-        """
-        Refine an existing story based on judge feedback.
-        
-        Args:
-            original_story: The story to improve
-            refinement_instructions: Specific improvements needed
-            
-        Returns:
-            Improved story with same structure
-        """
-        
-        refinement_prompt = StoryGenerationPrompts.refinement_prompt(
-            original_story, refinement_instructions
-        )
-        
-        try:
-            response = self.call_model(refinement_prompt, max_tokens=1200, temperature=0.6)
-            result = json.loads(response)
-            
-            if not all(key in result for key in ["title", "story", "moral"]):
-                raise ValueError("Invalid refined story format")
-                
-            return result
-            
-        except (json.JSONDecodeError, ValueError, KeyError):
-            # Return original if refinement fails
-            return original_story
     
     def _create_fallback_story(self, story_request: str) -> Dict:
         """Simple fallback story when LLM completely fails."""

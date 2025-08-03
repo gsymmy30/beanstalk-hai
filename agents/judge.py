@@ -4,8 +4,8 @@ from utils.prompts import JudgePrompts
 
 class JudgeSystem:
     """
-    Research-backed story evaluation system focused on creating amazing stories 
-    that happen to be perfect for bedtime.
+    Research-backed bedtime story evaluation system with detailed 10-point rubric
+    and optimal length checking for 8-minute read time.
     """
     
     def __init__(self, llm_call_function: Callable):
@@ -13,18 +13,26 @@ class JudgeSystem:
         
         # Research-based scoring weights
         self.weights = {
-            "narrative_excellence": 0.35,
-            "story_authenticity": 0.25,
-            "bedtime_flow": 0.25,
-            "age_appropriate_wonder": 0.15
+            "character_connection": 0.30,
+            "bedtime_appropriate": 0.25,
+            "storytelling_craft": 0.25,
+            "age_appropriate": 0.20
         }
         
-        self.pass_threshold = 4.0
-        self.bedtime_floor = 3.5  # Bedtime Flow must be at least 3.5
+        # Quality thresholds
+        self.pass_threshold = 7.0      # Must achieve 7.0+ to pass
+        self.bedtime_floor = 6.0       # Bedtime score cannot be below 6.0
+        self.dimension_floor = 4.0     # No dimension can be below 4.0
+        
+        # Length parameters for ~8 minute read
+        self.target_word_count = 1000  # Ideal length
+        self.min_word_count = 800      # Minimum acceptable
+        self.max_word_count = 1200     # Maximum acceptable
+        self.reading_speed = 125       # Words per minute (bedtime pace)
     
     def evaluate_story(self, story: Dict) -> Dict:
         """
-        Evaluate story with safety gate + 4-dimensional quality scoring.
+        Evaluate story using detailed 10-point rubric with length and safety checks.
         
         Args:
             story: {"title": str, "story": str, "moral": str}
@@ -32,32 +40,37 @@ class JudgeSystem:
         Returns:
             {
                 "safety_passed": bool,
-                "narrative_excellence": float,
-                "story_authenticity": float, 
-                "bedtime_flow": float,
-                "age_appropriate_wonder": float,
-                "overall_score": float,
+                "character_connection": float (1-10),
+                "bedtime_appropriate": float (1-10), 
+                "storytelling_craft": float (1-10),
+                "age_appropriate": float (1-10),
+                "overall_score": float (1-10),
+                "length_check": dict,
                 "passed": bool,
-                "feedback": Dict,
+                "feedback": dict,
                 "safety_issues": str (if safety failed)
             }
         """
         
-        # Step 1: Safety Gate
+        # Step 1: Length Analysis
+        length_analysis = self._analyze_length(story)
+        
+        # Step 2: Safety Gate
         safety_result = self._evaluate_safety(story)
         if not safety_result["passed"]:
             return {
                 "safety_passed": False,
                 "safety_issues": safety_result["issues"],
+                "length_check": length_analysis,
                 "passed": False,
                 "overall_score": 0.0
             }
         
-        # Step 2: Quality Evaluation
-        evaluation_prompt = JudgePrompts.quality_evaluation_prompt(story)
+        # Step 3: Quality Evaluation
+        evaluation_prompt = JudgePrompts.detailed_evaluation_prompt(story, length_analysis)
         
         try:
-            response = self.call_model(evaluation_prompt, max_tokens=1000, temperature=0.1)
+            response = self.call_model(evaluation_prompt, max_tokens=1400, temperature=0.1)
             evaluation = json.loads(response)
             
             # Calculate weighted overall score
@@ -67,42 +80,60 @@ class JudgeSystem:
                 if dimension in evaluation
             )
             
-            # Check pass conditions
-            bedtime_score = evaluation.get("bedtime_flow", 0)
+            # Apply pass conditions
+            bedtime_score = evaluation.get("bedtime_appropriate", 0)
+            all_dimensions_pass = all(
+                evaluation.get(dim, 0) >= self.dimension_floor 
+                for dim in self.weights.keys()
+            )
+            
             passed = (overall_score >= self.pass_threshold and 
-                     bedtime_score >= self.bedtime_floor)
+                     bedtime_score >= self.bedtime_floor and
+                     all_dimensions_pass and
+                     length_analysis["acceptable"])
             
             evaluation.update({
                 "safety_passed": True,
                 "overall_score": round(overall_score, 2),
+                "length_check": length_analysis,
                 "passed": passed
             })
             
             return evaluation
             
         except (json.JSONDecodeError, ValueError, KeyError):
-            return self._fallback_evaluation(story)
+            return self._fallback_evaluation(story, length_analysis)
     
-    def needs_refinement(self, scores: Dict) -> bool:
-        """Check if story needs refinement based on scores."""
-        return not scores.get("passed", False)
-    
-    def generate_refinement_instructions(self, scores: Dict) -> str:
-        """Generate specific improvement instructions based on evaluation."""
+    def _analyze_length(self, story: Dict) -> Dict:
+        """Analyze story length for optimal 8-minute reading time."""
         
-        refinement_prompt = JudgePrompts.refinement_instructions_prompt(scores)
+        story_text = story.get("story", "")
+        word_count = len(story_text.split())
+        estimated_read_time = word_count / self.reading_speed
         
-        try:
-            instructions = self.call_model(refinement_prompt, max_tokens=400, temperature=0.1)
-            return instructions.strip()
-            
-        except Exception:
-            return self._fallback_refinement_instructions(scores)
+        # Determine if length is acceptable
+        acceptable = self.min_word_count <= word_count <= self.max_word_count
+        
+        # Generate length feedback
+        if word_count < self.min_word_count:
+            length_feedback = f"Too short ({word_count} words, ~{estimated_read_time:.1f} min). Need {self.target_word_count} words for ~8 min read."
+        elif word_count > self.max_word_count:
+            length_feedback = f"Too long ({word_count} words, ~{estimated_read_time:.1f} min). Target {self.target_word_count} words for ~8 min read."
+        else:
+            length_feedback = f"Perfect length ({word_count} words, ~{estimated_read_time:.1f} min read time)."
+        
+        return {
+            "word_count": word_count,
+            "estimated_read_time": round(estimated_read_time, 1),
+            "acceptable": acceptable,
+            "feedback": length_feedback,
+            "target_range": f"{self.min_word_count}-{self.max_word_count} words"
+        }
     
     def _evaluate_safety(self, story: Dict) -> Dict:
-        """Safety gate evaluation - pass/fail only."""
+        """Safety gate evaluation using LLM intelligence."""
         
-        safety_prompt = JudgePrompts.safety_gate_prompt(story)
+        safety_prompt = JudgePrompts.safety_evaluation_prompt(story)
         
         try:
             response = self.call_model(safety_prompt, max_tokens=300, temperature=0.1)
@@ -110,53 +141,28 @@ class JudgeSystem:
             return result
             
         except (json.JSONDecodeError, ValueError, KeyError):
-            # Conservative fallback - assume safe unless obviously problematic
-            story_text = story.get("story", "").lower()
-            unsafe_words = ["die", "death", "kill", "blood", "scary", "terrifying", "nightmare"]
-            
-            if any(word in story_text for word in unsafe_words):
-                return {
-                    "passed": False,
-                    "issues": "Story contains potentially unsafe content for bedtime"
-                }
-            
-            return {"passed": True, "issues": ""}
+            # Conservative fallback - assume unsafe if we can't evaluate
+            return {
+                "passed": False,
+                "issues": "Unable to evaluate safety - LLM assessment required for content approval"
+            }
     
-    def _fallback_evaluation(self, story: Dict) -> Dict:
-        """Simple fallback evaluation when LLM fails."""
-        
-        # Conservative fallback - assume average quality
-        base_score = 3.0  # Below pass threshold to be safe
+    def _fallback_evaluation(self, story: Dict, length_analysis: Dict) -> Dict:
+        """Conservative fallback when LLM evaluation fails."""
         
         return {
             "safety_passed": True,
-            "narrative_excellence": base_score,
-            "story_authenticity": base_score,
-            "bedtime_flow": base_score,
-            "age_appropriate_wonder": base_score,
-            "overall_score": base_score,
-            "passed": False,  # Conservative - require LLM evaluation to pass
+            "character_connection": 5.0,
+            "bedtime_appropriate": 5.0,
+            "storytelling_craft": 4.5,
+            "age_appropriate": 5.0,
+            "overall_score": 4.9,
+            "length_check": length_analysis,
+            "passed": False,  # Conservative - require proper evaluation to pass
             "feedback": {
-                "narrative_excellence": "System fallback - LLM evaluation failed",
-                "story_authenticity": "System fallback - LLM evaluation failed", 
-                "bedtime_flow": "System fallback - LLM evaluation failed",
-                "age_appropriate_wonder": "System fallback - LLM evaluation failed"
+                "character_connection": "Unable to evaluate - system fallback. Story needs LLM assessment.",
+                "bedtime_appropriate": "Unable to evaluate - system fallback. Story needs LLM assessment.", 
+                "storytelling_craft": "Unable to evaluate - system fallback. Story needs LLM assessment.",
+                "age_appropriate": "Unable to evaluate - system fallback. Story needs LLM assessment."
             }
         }
-    
-    def _fallback_refinement_instructions(self, scores: Dict) -> str:
-        """Generate basic refinement instructions when LLM fails."""
-        
-        low_scores = []
-        for dimension, score in scores.items():
-            if isinstance(score, (int, float)) and score < 4.0:
-                low_scores.append(dimension)
-        
-        if "bedtime_flow" in low_scores:
-            return "Make the story start more engaging but wind down to a peaceful, cozy ending where characters feel safe and sleepy."
-        elif "narrative_excellence" in low_scores:
-            return "Strengthen the plot with more interesting events and let the child protagonist solve the main problem independently."
-        elif "story_authenticity" in low_scores:
-            return "Add more specific, vivid details and unique plot elements to make the story feel less generic and more engaging."
-        else:
-            return "Improve the story's appeal for children aged 5-10 with more age-appropriate challenges and empowering themes."
