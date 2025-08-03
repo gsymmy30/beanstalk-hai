@@ -1,6 +1,21 @@
 import os
 import openai
 from dotenv import load_dotenv
+from agents.input_handler import InputHandler
+from agents.story_generator import StoryGenerator
+from agents.judge import JudgeSystem
+from agents.qa import QAAgent
+
+"""
+Beanstalk AI - Bedtime Story Generator for Kids 5-10
+
+Before submitting the assignment, describe here in a few sentences what you would have built next if you spent 2 more hours on this project:
+
+With 2 more hours, I would have implemented the progress tracking system to demonstrate iterative improvement, 
+added story personalization features (remembering user preferences), and created a more sophisticated 
+refinement system that learns from successful stories to improve prompt engineering over time.
+
+"""
 
 # Load environment variables
 load_dotenv()
@@ -22,107 +37,16 @@ def call_model(prompt: str, max_tokens=3000, temperature=0.1) -> str:
     )
     return resp.choices[0].message["content"]
 
-def simple_input_validation(user_input: str) -> dict:
-    """Simple input validation without importing agents"""
-    if not user_input or len(user_input.strip()) < 2:
-        return {
-            "valid": False,
-            "story_elements": "",
-            "suggestion": "I need a bit more to work with! Try something like: 'A story about a brave mouse who lives in a library'"
-        }
-    
-    # For now, just enhance single words
-    cleaned = user_input.strip()
-    if len(cleaned.split()) == 1:
-        story_elements = f"A story about a {cleaned.lower()}"
-    else:
-        story_elements = user_input
-    
-    return {
-        "valid": True,
-        "story_elements": story_elements,
-        "suggestion": ""
-    }
-
-def generate_bedtime_story(story_request: str) -> dict:
-    """Generate bedtime story using direct LLM call"""
-    prompt = f"""
-Create a bedtime story for children aged 5-10 based on: "{story_request}"
-
-REQUIREMENTS:
-- Length: 900-1000 words (perfect for 10-15 minutes reading)
-- Child protagonist (age 5-10) who solves problems independently
-- Gentle, positive themes (friendship, kindness, exploration, overcoming small fears)
-- Simple plot: clear beginning, middle, peaceful resolution
-- Magical/imaginative elements balanced with familiar settings
-- Soothing language that gradually winds down toward the end
-- Light humor and playfulness without overstimulation
-- Happy, reassuring ending that makes child feel safe and sleepy
-
-Respond ONLY with valid JSON:
-{{
-    "title": "Compelling story title",
-    "story": "Complete 900-1000 word narrative",
-    "moral": "Simple life lesson naturally embedded in the story"
-}}
-"""
-    
-    try:
-        response = call_model(prompt, max_tokens=1200, temperature=0.7)
-        import json
-        return json.loads(response)
-    except:
-        return {
-            "title": "A Magical Adventure",
-            "story": "Once upon a time, there was a kind and curious child who discovered something wonderful that led to an amazing journey filled with friendship and joy. After their adventure, they returned home feeling happy and safe, ready for sweet dreams.",
-            "moral": "Every day holds the possibility of magic and wonder."
-        }
-
-def generate_qa_questions(story: dict) -> list:
-    """Generate Q&A questions for the story"""
-    prompt = f"""
-Generate 3 engaging questions that curious 5-10 year old children might ask about this story:
-
-Story: {story['title']} - {story['story'][:500]}...
-
-Make them specific to this story and age-appropriate.
-
-Respond ONLY with valid JSON:
-{{"questions": ["Question 1", "Question 2", "Question 3"]}}
-"""
-    
-    try:
-        response = call_model(prompt, max_tokens=300, temperature=0.3)
-        import json
-        result = json.loads(response)
-        return result.get("questions", [])
-    except:
-        return [
-            "What was your favorite part of the story?",
-            "What do you think happened next?",
-            "If you could be in the story, what would you do?"
-        ]
-
-def answer_question(question: str, story: dict) -> str:
-    """Answer a child's question about the story"""
-    prompt = f"""
-Answer this child's question about the bedtime story in a warm, age-appropriate way (2-4 sentences):
-
-Story Context: {story['title']} - {story['story'][:300]}...
-Child's Question: "{question}"
-
-Keep the magic alive and be encouraging. Respond with just the answer (no JSON).
-"""
-    
-    try:
-        return call_model(prompt, max_tokens=200, temperature=0.4).strip()
-    except:
-        return "That's such a wonderful question! What do you think the answer might be?"
-
 def main():
     """Main Beanstalk AI story generation loop"""
     print("🌱 Welcome to Beanstalk AI - Magical Bedtime Stories!")
     print("=" * 50)
+    
+    # Initialize all components
+    input_handler = InputHandler(call_model)
+    story_generator = StoryGenerator(call_model)
+    judge_system = JudgeSystem(call_model)
+    qa_agent = QAAgent(call_model)
     
     while True:
         print("\n📖 Let's create a magical bedtime story!")
@@ -133,29 +57,55 @@ def main():
             break
         
         try:
-            # Step 1: Validate input
-            processed_input = simple_input_validation(user_input)
+            # Step 1: Validate and process input
+            print("🔍 Processing your request...")
+            processed_input = input_handler.process_input(user_input)
             if not processed_input["valid"]:
                 print(f"🤔 {processed_input['suggestion']}")
                 continue
             
+            print(f"✅ Request processed: {processed_input['story_elements']}")
+            
             # Step 2: Generate story
             print("✨ Creating your magical bedtime story...")
-            story = generate_bedtime_story(processed_input["story_elements"])
+            story_result = story_generator.generate_story(processed_input["story_elements"])
             
-            # Step 3: Present the story
+            # Step 3: Evaluate with judge system
+            print("🔍 Evaluating story quality...")
+            judge_scores = judge_system.evaluate_story(story_result)
+            
+            if not judge_scores.get("safety_passed", True):
+                print(f"❌ Story failed safety check: {judge_scores.get('safety_issues', 'Unknown issue')}")
+                continue
+            
+            # Step 4: Refine if needed (max 2 iterations)
+            refinement_count = 0
+            while judge_system.needs_refinement(judge_scores) and refinement_count < 2:
+                print(f"🔄 Improving story quality (attempt {refinement_count + 1})...")
+                refinement_instructions = judge_system.generate_refinement_instructions(judge_scores)
+                story_result = story_generator.refine_story(story_result, refinement_instructions)
+                judge_scores = judge_system.evaluate_story(story_result)
+                refinement_count += 1
+            
+            # Show quality metrics
+            if judge_scores.get("passed", False):
+                print(f"🎉 Story approved! Quality score: {judge_scores.get('overall_score', 'N/A')}/5")
+            else:
+                print(f"⚠️  Story accepted after refinements. Score: {judge_scores.get('overall_score', 'N/A')}/5")
+            
+            # Step 5: Present the story
             print("\n" + "=" * 60)
-            print(f"📚 {story['title']}")
+            print(f"📚 {story_result['title']}")
             print("=" * 60)
-            print(story['story'])
-            print(f"\n💭 Moral: {story['moral']}")
+            print(story_result['story'])
+            print(f"\n💭 Moral: {story_result['moral']}")
             print("=" * 60)
             
-            # Step 4: Q&A opportunity
-            questions = generate_qa_questions(story)
+            # Step 6: Q&A opportunity
+            qa_questions = qa_agent.generate_question_opportunities(story_result)
             print(f"\n🤔 Curious about the story? You can ask up to 3 questions!")
             print("Example questions:")
-            for i, q in enumerate(questions, 1):
+            for i, q in enumerate(qa_questions, 1):
                 print(f"  {i}. {q}")
             
             questions_asked = 0
@@ -164,7 +114,7 @@ def main():
                 if question.lower() == 'done':
                     break
                 
-                answer = answer_question(question, story)
+                answer = qa_agent.answer_question(question, story_result)
                 print(f"💡 {answer}")
                 questions_asked += 1
             
