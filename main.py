@@ -64,7 +64,7 @@ def display_scores(judge_scores):
     print(f"   {'Overall':<12} {overall:>4.1f}/10")
 
 def create_story(input_handler, story_generator, judge_system, qa_agent, story_tracker):
-    """Handle the story creation workflow"""
+    """Handle the story creation workflow with refinement"""
     while True:
         print("\n📖 What kind of bedtime story would you like?")
         print("Examples: 'brave mouse', 'dragon who loves books', 'girl who finds magic paintbrush'")
@@ -85,33 +85,47 @@ def create_story(input_handler, story_generator, judge_system, qa_agent, story_t
                 print(f"\n{processed_input['suggestion']}")
                 continue
             
-            # Only show "Creating..." after validation passes
+            # Generate initial story
             print("\nCreating your story...")
+            initial_story = story_generator.generate_story(processed_input["story_elements"])
+            initial_scores = judge_system.evaluate_story(initial_story)
             
-            # Generate and evaluate story
-            story_result = story_generator.generate_story(processed_input["story_elements"])
-            judge_scores = judge_system.evaluate_story(story_result)
+            # Safety check on initial story
+            if not initial_scores.get("safety_passed", True):
+                print("\nStory didn't pass safety check. Let's try a different idea!")
+                continue
             
-            # Save to tracker
+            # Refine the story based on judge feedback
+            print("Refining the story...")
+            refined_story = story_generator.refine_story(initial_story, initial_scores)
+            
+            # Get final judge scores on refined story
+            final_scores = judge_system.evaluate_story(refined_story)
+            
+            # Use refined story and final scores
+            story_result = refined_story
+            judge_scores = final_scores
+            
+            # Save to tracker (final refined version)
             story_tracker.add_story(
                 story=story_result, 
                 evaluation=judge_scores, 
                 user_request=user_input
             )
             
-            # Safety check
+            # Safety check on final refined story
             if not judge_scores.get("safety_passed", True):
-                print("\nStory didn't pass safety check. Let's try a different idea!")
+                print("\nRefined story didn't pass safety check. Let's try a different idea!")
                 continue
             
-            # Display story
+            # Display final story
             print("\n" + "YOUR STORY".center(50))
             print("=" * 50)
             print(f"\n📖 {story_result['title']}")
             print(f"\n{story_result['story']}")
             print(f"\n💫 {story_result['moral']}")
             
-            # Show quality scores
+            # Show quality scores (final refined scores)
             display_scores(judge_scores)
             
             # Q&A session

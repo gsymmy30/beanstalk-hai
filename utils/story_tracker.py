@@ -178,6 +178,21 @@ class StoryTracker:
             border-left: 4px solid #2196f3;
             font-style: italic;
         }}
+        .feedback {{
+            margin-top: 15px;
+            padding: 15px;
+            background: #fff3cd;
+            border-radius: 5px;
+            border-left: 4px solid #ffc107;
+        }}
+        .feedback h4 {{
+            margin: 0 0 10px 0;
+            color: #856404;
+        }}
+        .feedback-item {{
+            margin: 5px 0;
+            font-size: 0.9em;
+        }}
     </style>
 </head>
 <body>
@@ -240,6 +255,20 @@ class StoryTracker:
         <div class="story-content">
             <div class="story-text">{story["story"]["content"]}</div>
             <div class="moral"><strong>Moral:</strong> {story["story"]["moral"]}</div>
+"""
+            
+            # Add feedback if available
+            if eval_data.get("feedback"):
+                html_content += """
+            <div class="feedback">
+                <h4>Judge Feedback:</h4>
+"""
+                for dimension, comment in eval_data["feedback"].items():
+                    html_content += f'<div class="feedback-item"><strong>{dimension.replace("_", " ").title()}:</strong> {comment}</div>'
+                
+                html_content += "</div>"
+            
+            html_content += """
         </div>
     </div>
 """
