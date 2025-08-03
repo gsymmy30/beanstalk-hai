@@ -37,6 +37,118 @@ def call_model(prompt: str, max_tokens=3000, temperature=0.1) -> str:
     )
     return resp.choices[0].message["content"]
 
+def display_judge_metrics(judge_scores: dict) -> None:
+    """Display detailed judge evaluation metrics in a user-friendly format"""
+    
+    print("\n" + "🔍 STORY QUALITY EVALUATION" + " " * 20)
+    print("=" * 60)
+    
+    # Safety Check
+    if not judge_scores.get("safety_passed", True):
+        print("❌ SAFETY CHECK: FAILED")
+        print(f"   Issues: {judge_scores.get('safety_issues', 'Unknown safety concern')}")
+        print("=" * 60)
+        return
+    else:
+        print("✅ SAFETY CHECK: PASSED")
+    
+    # Length Analysis
+    length_check = judge_scores.get("length_check", {})
+    if length_check:
+        word_count = length_check.get("word_count", 0)
+        read_time = length_check.get("estimated_read_time", 0)
+        acceptable = length_check.get("acceptable", False)
+        
+        status = "✅ OPTIMAL" if acceptable else "⚠️  NEEDS ADJUSTMENT"
+        print(f"\n📏 LENGTH ANALYSIS: {status}")
+        print(f"   Word Count: {word_count} words")
+        print(f"   Read Time: ~{read_time} minutes")
+        print(f"   Target Range: {length_check.get('target_range', 'Unknown')}")
+        print(f"   Assessment: {length_check.get('feedback', 'No feedback available')}")
+    
+    # Quality Scores
+    print(f"\n📊 QUALITY SCORES (Research-Based 10-Point Rubric):")
+    print("-" * 50)
+    
+    # Define scoring dimensions with weights
+    dimensions = [
+        ("character_connection", "Character Connection", "30%"),
+        ("bedtime_appropriate", "Bedtime Appropriate", "25%"),
+        ("storytelling_craft", "Storytelling Craft", "25%"),
+        ("age_appropriate", "Age Appropriate", "20%")
+    ]
+    
+    total_weighted_score = 0
+    for dim_key, dim_name, weight in dimensions:
+        score = judge_scores.get(dim_key, 0)
+        
+        # Determine score level
+        if score >= 9.0:
+            level = "🌟 EXCEPTIONAL"
+        elif score >= 7.0:
+            level = "🎯 STRONG"
+        elif score >= 5.0:
+            level = "📝 ADEQUATE"
+        elif score >= 3.0:
+            level = "⚠️  WEAK"
+        else:
+            level = "❌ POOR"
+        
+        print(f"   {dim_name:<20} {score:>4.1f}/10  {level:<15} (Weight: {weight})")
+        
+        # Add to weighted calculation
+        weight_val = float(weight.strip('%')) / 100
+        total_weighted_score += score * weight_val
+    
+    # Overall Score
+    overall_score = judge_scores.get("overall_score", total_weighted_score)
+    passed = judge_scores.get("passed", False)
+    
+    print("-" * 50)
+    if passed:
+        status_icon = "🎉"
+        status_text = "APPROVED FOR PUBLICATION"
+    else:
+        status_icon = "🔄"
+        status_text = "NEEDS REFINEMENT"
+    
+    print(f"   {'OVERALL SCORE':<20} {overall_score:>4.1f}/10  {status_icon} {status_text}")
+    
+    # Pass/Fail Requirements
+    print(f"\n📋 EVALUATION CRITERIA:")
+    print(f"   ✓ Safety Gate: {'PASSED' if judge_scores.get('safety_passed', True) else 'FAILED'}")
+    print(f"   ✓ Overall Score ≥ 7.0: {'PASSED' if overall_score >= 7.0 else f'FAILED ({overall_score:.1f}/7.0)'}")
+    print(f"   ✓ Bedtime Score ≥ 6.0: {'PASSED' if judge_scores.get('bedtime_appropriate', 0) >= 6.0 else 'FAILED'}")
+    print(f"   ✓ All Dimensions ≥ 4.0: {'PASSED' if all(judge_scores.get(d[0], 0) >= 4.0 for d in dimensions) else 'FAILED'}")
+    print(f"   ✓ Length Acceptable: {'PASSED' if length_check.get('acceptable', False) else 'FAILED'}")
+    
+    # Detailed Feedback (if available)
+    feedback = judge_scores.get("feedback", {})
+    if feedback:
+        print(f"\n💬 DETAILED FEEDBACK:")
+        print("-" * 40)
+        for dim_key, dim_name, _ in dimensions:
+            if dim_key in feedback:
+                print(f"\n📝 {dim_name}:")
+                # Wrap long feedback text
+                feedback_text = feedback[dim_key]
+                words = feedback_text.split()
+                lines = []
+                current_line = "   "
+                for word in words:
+                    if len(current_line + word) > 65:
+                        lines.append(current_line.rstrip())
+                        current_line = "   " + word + " "
+                    else:
+                        current_line += word + " "
+                if current_line.strip():
+                    lines.append(current_line.rstrip())
+                
+                for line in lines:
+                    print(line)
+    
+    print("=" * 60)
+
 def main():
     """Main Beanstalk AI story generation loop"""
     print("🌱 Welcome to Beanstalk AI - Magical Bedtime Stories!")
@@ -74,23 +186,18 @@ def main():
             print("🔍 Evaluating story quality...")
             judge_scores = judge_system.evaluate_story(story_result)
             
+            # Step 4: Display detailed judge metrics
+            display_judge_metrics(judge_scores)
+            
+            # Check if story passed safety
             if not judge_scores.get("safety_passed", True):
-                print(f"❌ Story failed safety check: {judge_scores.get('safety_issues', 'Unknown issue')}")
+                print(f"\n❌ Story failed safety evaluation. Please try a different story request.")
                 continue
             
-            # Step 4: Show quality metrics
-            length_check = judge_scores.get("length_check", {})
-            print(f"📏 Length: {length_check.get('feedback', 'Unknown length')}")
-            
-            if judge_scores.get("passed", False):
-                print(f"🎉 Story approved! Quality score: {judge_scores.get('overall_score', 'N/A')}/10")
-            else:
-                print(f"📝 Story completed. Quality score: {judge_scores.get('overall_score', 'N/A')}/10")
-                print("   (Story generation focused on excellence - no refinement needed)")
-            
             # Step 5: Present the story
-            print("\n" + "=" * 60)
-            print(f"📚 {story_result['title']}")
+            print("\n" + "📚 YOUR BEDTIME STORY" + " " * 25)
+            print("=" * 60)
+            print(f"🏷️  Title: {story_result['title']}")
             print("=" * 60)
             print(story_result['story'])
             print(f"\n💭 Moral: {story_result['moral']}")

@@ -55,7 +55,7 @@ class StoryGenerationPrompts:
     @staticmethod
     def complete_story_prompt(story_request: str) -> str:
         return f"""
-Create an exceptional bedtime story for children aged 5-10. This will be judged against professional children's literature standards.
+Create an exceptional bedtime story for children aged 5-10. This will be judged against professional children's literature standards with a detailed 10-point rubric.
 
 STORY REQUEST: "{story_request}"
 
@@ -64,24 +64,81 @@ MANDATORY WORD COUNT: 900-1000 words. Stories under 850 words will be REJECTED.
 STRUCTURE REQUIREMENTS:
 Format with clear paragraph breaks (\\n\\n). Target 8-12 paragraphs of 80-120 words each.
 
-OPENING HOOK (Paragraphs 1-2, ~150-200 words):
-Start with your protagonist DOING something specific, not describing them. Show personality through action immediately.
+CHARACTER DEVELOPMENT ARCHITECTURE
 
-MIDDLE DEVELOPMENT (Paragraphs 3-8, ~500-600 words):
-BUILD REAL TENSION with these requirements:
-- Introduce a problem that takes MULTIPLE attempts to solve
-- Show 2-3 specific failed attempts before success
-- Include physical challenges that require ingenuity
-- Add time pressure or escalating consequences
-- Use dialogue to show character thinking through problems
+CHARACTER PERSONALITY INTEGRATION:
+- Choose ONE specific trait that drives the plot (e.g., "always counts things in threes," "asks exactly two questions about everything," "collects smooth stones")
+- Show this trait in action at least 3 times throughout the story
+- Make the trait both help AND hinder the character realistically
+- Use the trait to create authentic dialogue: "One... two... three deep breaths, just like Mom taught me"
+
+EMOTIONAL LAYERING REQUIREMENTS:
+For each major story beat, include ALL four elements:
+- Physical sensation the child feels ("stomach fluttered," "hands got sweaty," "shoulders relaxed")
+- Internal thought in kid language ("This is scary but I can do it," "Maybe I'm not too little after all")
+- External emotional expression (face scrunched up, bounced on toes, bit lip nervously)
+- Emotional growth moment (from worried to determined to proud, shown through actions)
+
+FORBIDDEN EMOTIONAL SHORTCUTS:
+NEVER USE: "felt brave" "was happy" "felt proud" "heart filled with"
+INSTEAD USE: "stood taller" "grinned so wide her cheeks hurt" "chest puffed out" "walked with bigger steps"
+
+AUTHENTIC CHILD DIALOGUE PATTERNS:
+- Incomplete sentences when excited: "But what if we— oh! I know!"
+- Repetition for emphasis: "Really, really, really big"
+- Questions that reveal thinking: "Why do you think it's purple? Purple's not scary, right?"
+- Self-talk during problem-solving: "Okay, okay, think Maya, think..."
+- Age-appropriate vocabulary with occasional "big words" they're proud of
+- Natural interruptions and topic shifts
+- Show personality through speech patterns (cautious kid asks more questions, bold kid makes more statements)
+
+ENERGY CURVE PRECISION MAP
+
+PARAGRAPH-BY-PARAGRAPH ENERGY CONTROL:
+Paragraphs 1-3: HIGH energy (action verbs: dashed, leaped, discovered, gasped)
+Paragraphs 4-6: MEDIUM energy (steady verbs: walked, searched, tried, considered)
+Paragraphs 7-9: SETTLING energy (gentle verbs: settled, arranged, whispered, noticed)
+Paragraphs 10-12: LOW energy (sleepy verbs: nestled, dozed, curled, drifted)
+
+LANGUAGE RHYTHM SHIFTS:
+Early: Short, punchy sentences. Quick dialogue exchanges. Exclamation points.
+Middle: Balanced sentence variety with longer descriptive passages. Mixed punctuation.
+Late: Longer, flowing sentences with soft consonants and soothing sounds. Periods and gentle commas.
+
+SENSORY PROGRESSION FOR BEDTIME:
+Opening (alerting senses): Bright colors, clear sounds, varied textures
+- "Sunlight sparkled," "leaves crunched," "bark was rough under her fingers"
+Middle (engaging senses): Rich visual details, varied sounds, active touch
+- "Moss covered the rocks like green velvet," "water gurgled over stones"
+Ending (calming senses): Soft colors, gentle sounds, warm/smooth textures
+- "Golden light filtered through," "breeze whispered," "grass was soft as a pillow"
+
+MANDATORY ENDING SENSORY ELEMENTS (include at least 2):
+- Soft texture: "moss like velvet," "feathers that tickled," "sand smooth as silk"
+- Gentle sound: "creek babbled softly," "leaves whispered," "birds hummed quietly"
+- Warm/cool comfort: "sun-warmed stone," "cool grass on bare feet," "gentle breeze"
+- Soothing visual: "stars like tiny nightlights," "golden glow," "soft shadows"
+
+CONFLICT ARCHITECTURE
+
+PROBLEM-SOLVING PROGRESSION TEMPLATE (MANDATORY):
+Attempt 1: Obvious solution (fails because too simple)
+- Character learns: "That was harder than I thought" or equivalent
+- Show specific failure: what went wrong and why
+Attempt 2: Clever solution (fails because missing key element)
+- Character learns: "I need to think differently" or equivalent
+- Show character adapting approach based on first failure
+Attempt 3: Creative solution (succeeds because combines learning)
+- Character realizes: "I had to try both ways together" or equivalent
+- Success comes from applying both previous lessons
 
 CONFLICT EXPANSION RULES:
 Your main conflict CANNOT be resolved in one paragraph. It must:
-- Take at least 200 words to fully resolve
-- Include setbacks and complications
-- Show the protagonist trying different approaches
+- Take at least 250 words to fully resolve
+- Include setbacks and complications that feel authentic
+- Show the protagonist trying different approaches with specific details
 - Have moments where things get worse before getting better
-- Require genuine cleverness or bravery, not luck
+- Require genuine cleverness or bravery AND persistence, never luck
 
 CONCRETE ACTION REQUIREMENTS:
 NEVER write vague action like "they solved the problem" or "worked together to save everyone." Instead:
@@ -90,89 +147,105 @@ NEVER write vague action like "they solved the problem" or "worked together to s
 - Add sensory details during action: "Her hands burned from the rough rope, rain stung her eyes"
 - Show physical consequences: "She stumbled backward, breathing hard, dirt under her fingernails"
 
-DIALOGUE DURING ACTION:
-Include realistic kid dialogue during tense moments:
-- Problem-solving out loud: "Wait, what if we try from this side?"
-- Expressing worry: "It's not working! The water's getting higher!"
-- Encouraging themselves: "Come on, Maya, you can do this"
-- Celebrating small wins: "Yes! That actually worked!"
+SETTING AS CHARACTER
 
-RESOLUTION & WIND-DOWN (Paragraphs 9-12, ~250-300 words):
-Transition to peaceful tone through SPECIFIC CALMING ACTIVITIES:
+SETTING PERSONALITY REQUIREMENTS:
+Give the setting mood that matches energy curve:
+- Opening setting: Dynamic, full of potential (rustling leaves, dancing shadows, morning light)
+- Conflict setting: Challenging but not threatening (steep hill, tangled roots, rushing water)
+- Resolution setting: Protective and nurturing (sheltered grove, gentle clearing, cozy nook)
+
+SETTING MUST ACTIVELY HELP CHARACTER:
+Don't just describe - show how setting provides what character needs
+GOOD: "The old oak's hollow was just the right size for two tired adventurers"
+GOOD: "The smooth rocks made perfect stepping stones across the creek"
+BAD: "They found a beautiful clearing with an old oak tree"
+BAD: "There was a creek with rocks in it"
+
+BEDTIME STORY AI PATTERN KILLERS
+
+FORBIDDEN PHRASES (will result in lower craft scores):
+- "magical bond," "heart filled with," "learned valuable lesson"
+- "courage deep inside," "friendship would last forever"
+- "as they drifted off to sleep" (too meta for bedtime stories)
+- "once upon a time" (overused opening)
+- "happily ever after" (too abrupt for bedtime)
+
+REQUIRED ALTERNATIVES:
+- Show bonds through actions: "shared the last piece of bread," "helped without being asked"
+- Show lessons through changed behavior: "next time, asked for help first," "remembered to look up AND down"
+- End with characters in sleep-ready position, not talking about sleep
+- Open with character in action, not exposition
+- End with peaceful scene, not declaration of happiness
+
+AUTHENTIC VOICE MARKERS:
+- Use contractions naturally: "didn't," "couldn't," "wasn't"
+- Include imperfect kid logic: "Maybe if I close my eyes, it'll work better"
+- Show thought processes: "First this, then that, then... wait, what if..."
+- Natural speech interruptions: "I think we should— oh look, a butterfly!"
+
+THEME INTEGRATION SOPHISTICATION
+
+THEME WEAVING TECHNIQUE:
+Instead of stating the theme, demonstrate it through:
+- Character's specific actions (shows kindness by sharing only cookie)
+- Natural consequences (kindness leads to unexpected friendship)
+- Character's realization through dialogue: "I'm glad I shared... now I have someone to explore with"
+- Callback in ending: Character does the same kind thing again, but bigger
+
+THEME MUST EMERGE FROM PLOT, NOT BE ADDED TO IT
+The moral should feel inevitable based on character's journey, not tacked on.
+
+OPENING HOOK REQUIREMENTS (Paragraphs 1-2, ~150-200 words)
+
+START WITH CHARACTER DOING SOMETHING SPECIFIC:
+GOOD: "Seven-year-old Sam was counting the cracks in the sidewalk—one, two, three—when something purple caught his eye"
+GOOD: "Mia had asked her two questions for the day already, but the glowing mushroom made her forget all about her rule"
+BAD: "There once was a little girl who loved adventures"
+BAD: "Sam was a curious boy who lived near the woods"
+
+HOOK REQUIREMENTS:
+- Establish character age and defining trait immediately
+- Put character in motion, not description
+- Include sensory detail that draws reader in
+- Hint at the adventure to come
+- Use character's personality trait in the very first action
+
+RESOLUTION & WIND-DOWN (Paragraphs 9-12, ~250-300 words)
 
 CONCRETE WIND-DOWN ACTIONS (choose 2-3):
-- Building something cozy (fort, nest, shelter)
-- Sharing food or warm drinks
-- Caring for each other (bandaging scrapes, brushing dirt off)
-- Quiet conversation about what they learned
-- Preparing for sleep (finding soft spots, arranging blankets)
-- Gentle activities (star-gazing, listening to night sounds)
+- Building something cozy (fort, nest, shelter) with specific details
+- Sharing food or warm drinks with sensory descriptions
+- Caring for each other (bandaging scrapes, brushing dirt off) gently
+- Quiet conversation about what they learned (not preachy)
+- Preparing for sleep (finding soft spots, arranging blankets) naturally
+- Gentle activities (star-gazing, listening to night sounds) peacefully
 
 ENDING REQUIREMENTS - SHOW THROUGH ACTIONS:
-✓ "Mira spread her jacket on the soft moss and Leo curled up beside her"
-✓ "They listened to the gentle splash of water and the soft hoot of owls"
-✓ "Tomorrow we'll explore the crystal cave," Leo whispered, already yawning"
+GOOD: "Mira spread her jacket on the soft moss and Leo curled up beside her, his counting finally quiet"
+GOOD: "They listened to the gentle splash of water and the soft hoot of owls overhead"
+GOOD: "Tomorrow we'll explore the crystal cave,' Leo whispered, already yawning"
+BAD: "Their hearts were full of love and friendship"
+BAD: "They felt peaceful and content"
+BAD: "The magical bond between them would last forever"
 
-✗ "Their hearts were full of love and friendship"
-✗ "They felt peaceful and content"
-✗ "The magical bond between them would last forever"
+FINAL QUALITY CHECKLIST
 
-CHILD PROTAGONIST REQUIREMENTS:
-- Age 5-10 with specific personality traits (not "curious" - be specific: "always asks three questions about everything")
-- Must solve their own problems through thinking and trying
-- Show realistic kid emotions: frustration, excitement, worry, determination
-- Give them specific skills or knowledge that helps
-- Let them make mistakes and learn from them
-
-WORLD-BUILDING SPECIFICS:
-Instead of generic settings, create specific places:
-✓ "The oak tree with a hollow big enough to sit in, where someone had carved a tiny door"
-✓ "The stream that made different musical notes as it flowed over smooth stones"
-✗ "A magical forest" or "beautiful meadow"
-
-AVOID THESE STORY KILLERS:
-- Wise talking animals who give all the answers
-- Magic items that solve problems instantly
-- Adults appearing to help at crucial moments
-- Problems that resolve through coincidence or luck
-- Generic "believe in yourself" messaging
-- Conflicts that last less than 150 words
-
-TENSION ESCALATION EXAMPLE:
-"First, Sara tried pushing the heavy door - it wouldn't budge. Then she searched for another way out, but the windows were too high. Water kept rising around her ankles. She remembered her dad's toolbox and grabbed a hammer, but the door was too thick. Panic rising, she noticed loose hinges and worked to remove the pins one by one, her fingers shaking as the water reached her knees."
-
-SPECIFIC SCENE REQUIREMENTS:
-Every major scene must include:
-- What the character sees, hears, feels, smells
-- Specific physical actions they take
-- Internal thought process
-- Dialogue that sounds like real kids talking
-- Clear cause-and-effect consequences
-
-LANGUAGE & VOCABULARY:
-- Rich but accessible vocabulary
-- Sentence variety (short punchy sentences mixed with longer descriptive ones)
-- Metaphors kids understand: "brave as a lion" not "resolute in their convictions"
-- Sound words that add energy: splash, thud, whisper, rustle
-
-THEMES TO WEAVE IN (naturally, not preachy):
-- Problem-solving through persistence
-- Friendship shown through actions, not words
-- Courage in small, realistic ways
-- Learning from mistakes
-- Finding wonder in ordinary things
-
-FINAL QUALITY CHECK:
-Before finishing, ask yourself:
-- Does this have enough action to keep a 7-year-old engaged?
-- Could I film this story? (If too abstract, add concrete details)
-- Does the conflict take real effort to resolve?
-- Does the ending show characters doing actual bedtime-ready things?
+Before finishing, verify:
+- Character trait appears 3+ times and drives plot
+- Energy curve flows: engaging to exciting to settling to peaceful
+- All emotions shown through actions/sensations, not told
+- Dialogue sounds like real kids talking
+- Setting actively helps character solve problems
+- Theme emerges naturally from character's choices
+- No AI pattern phrases detected
+- Ending shows sleepy-ready actions, not statements about sleep
+- Word count 900-1000 with proper paragraph breaks
 
 Respond with JSON:
 {{
-    "title": "Specific, intriguing title that hints at the real adventure",
-    "story": "Your complete 900-1000 word story with proper \\n\\n paragraph breaks",
+    "title": "Specific, intriguing title that hints at the real adventure and character trait",
+    "story": "Your complete 900-1000 word story with proper \\n\\n paragraph breaks following ALL requirements above",
     "moral": "Life lesson that emerges naturally from the character's actions and choices"
 }}
 """
@@ -417,10 +490,10 @@ Respond ONLY with valid JSON:
     "storytelling_craft": X.X,
     "age_appropriate": X.X,
     "feedback": {{
-        "character_connection": "Detailed analysis against rubric - what level achieved and why",
-        "bedtime_appropriate": "Assessment of pacing and sleep preparation effectiveness",
-        "storytelling_craft": "Evaluation of hook, structure, voice authenticity, AI patterns",
-        "age_appropriate": "Analysis of complexity, themes, and developmental fit"
+        "character_connection": "Detailed analysis against rubric - what level achieved and why. What can be done to improve the score?",
+        "bedtime_appropriate": "Assessment of pacing and sleep preparation effectiveness. What can be done to improve the score?",
+        "storytelling_craft": "Evaluation of hook, structure, voice authenticity, AI patterns. What can be done to improve the score?",
+        "age_appropriate": "Analysis of complexity, themes, and developmental fit. What can be done to improve the score?"
     }}
 }}
 """
