@@ -83,9 +83,9 @@ I think the dragon loves adventure books and fairy tales!
 What kind of books would be your favorite?
 ```
 
-## 🏗️ System Architecture
+## 🏗️ System Workflow
 
-![Beanstalk AI Architecture](architecture-diagram.png)
+![Beanstalk AI Flow](flow-diagram.png)
 
 ### Key Components
 

@@ -68,13 +68,13 @@ First, think about:
 
 STEP 2: CHOOSE YOUR BEDTIME STORY STRUCTURE
 
-GENTLE FRIENDSHIP: Character feels lonely → meets kind helpers → they share something special → bond through caring → cozy together
+FRIENDSHIP: Character feels lonely → meets kind helpers → they share something special → bond through caring → cozy together
 
 HELPING STORY: Character finds someone who needs help → gathers caring friends → work together kindly → everyone feels better → peaceful satisfaction
 
 COZY DISCOVERY: Character finds something interesting → shares discovery with friends → explore together gently → learn something wonderful → settle down content
 
-GENTLE ADVENTURE: Character wants to find something → meets helpful friends → journey together safely → find what they sought → rest together happily
+ADVENTURE: Character wants to find something → meets helpful friends → journey together safely → find what they sought → rest together happily
 
 STEP 3: BEDTIME STORY ESSENTIALS
 

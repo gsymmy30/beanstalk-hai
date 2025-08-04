@@ -4,7 +4,7 @@ from utils.prompts import JudgePrompts
 
 class JudgeSystem:
     """
-    Story evaluation system against 4 dimensions.
+    Story evaluation system - 4 dimensions.
     """
     def __init__(self, llm_call_function: Callable):
         self.call_model = llm_call_function
