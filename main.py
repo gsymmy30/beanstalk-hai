@@ -13,12 +13,12 @@ Beanstalk AI - Bedtime Story Generator for Kids 5-10
 
 load_dotenv()
 
-def call_model(prompt: str, max_tokens=3000, temperature=0.1) -> str:
-    """OpenAI API wrapper"""
+def call_model(prompt: str, max_tokens=3000, temperature=0.7) -> str:
+    """Call OpenAI's API"""
     openai.api_key = os.getenv("OPENAI_API_KEY")
     
     if not openai.api_key:
-        print("No OpenAI API key found. Add OPENAI_API_KEY to your .env file")
+        print("\n⚠️  No API key found. Add OPENAI_API_KEY to your .env file")
         return '{"title": "NA", "story": "NA", "moral": "NA"}'
     
     resp = openai.ChatCompletion.create(
@@ -31,7 +31,7 @@ def call_model(prompt: str, max_tokens=3000, temperature=0.1) -> str:
     return resp.choices[0].message["content"]
 
 def show_menu():
-    """Main menu display"""
+    """Display the main menu"""
     print("\n" + "=" * 50)
     print("🌱✨ BEANSTALK AI ✨🌱".center(50))
     print("Magical Bedtime Stories for Kids 5-10".center(50))
@@ -41,135 +41,240 @@ def show_menu():
     print("  📊  2. View story report") 
     print("  🌙  3. Exit")
     print()
-    print("=" * 50)
 
-def display_scores(judge_scores):
-    """Show story quality metrics"""
-    print(f"\nQuality Scores")
-    print("-" * 20)
-    scores = [
-        ("character_connection", "Character"),
-        ("bedtime_appropriate", "Bedtime"),
-        ("storytelling_craft", "Storytelling"),
-        ("age_appropriate", "Age Level")
-    ]
+def display_outline(outline):
+    """Show the story outline in a clean format"""
+    if not outline:
+        return
+        
+    print("\n📝 Story Outline")
+    print("-" * 40)
     
-    for dim_key, dim_name in scores:
-        score = judge_scores.get(dim_key, 0)
-        print(f"   {dim_name:<12} {score:>4.1f}/10")
-    overall = judge_scores.get("overall_score", 0)
-    print("-" * 20)
-    print(f"   {'Overall':<12} {overall:>4.1f}/10")
+    # Main character
+    protagonist = outline.get('protagonist', {})
+    if protagonist:
+        name = protagonist.get('name', 'Unknown')
+        age = protagonist.get('age', '?')
+        trait = protagonist.get('personality', 'N/A')
+        char_type = protagonist.get('type', 'character')
+        
+        # Format based on type
+        if char_type.lower() in ['human', 'child', 'boy', 'girl']:
+            print(f"👦 Main Character: {name}, age {age}")
+        else:
+            print(f"🐲 Main Character: {name} the {char_type}")
+        print(f"   Personality: {trait}")
+    
+    # Friends
+    helpers = outline.get('helpers', [])
+    if helpers:
+        print(f"🐾 Friends:")
+        for helper in helpers[:3]:
+            if isinstance(helper, dict):
+                h_name = helper.get('name', 'Unknown')
+                h_type = helper.get('type', 'friend')
+                print(f"   - {h_name} the {h_type}")
+    
+    # Story basics
+    setting = outline.get('setting', 'N/A')
+    conflict = outline.get('conflict', 'N/A')
+    
+    print(f"📍 Setting: {setting}")
+    print(f"❓ Challenge: {conflict}")
+    print("-" * 40)
+
+def display_scores(scores):
+    """Display quality scores in a visual way"""
+    print(f"\n📊 Story Quality")
+    print("-" * 30)
+    
+    overall = scores.get("overall_score", 0)
+    stars = "⭐" * int(overall / 2)
+    print(f"Overall: {stars} ({overall:.1f}/10)")
 
 def create_story(input_handler, story_generator, judge_system, qa_agent, story_tracker):
-    """handle the story creation workflow"""
-    while True:
-        print("\n📖 What kind of bedtime story would you like?")
-        print("Examples: 'brave mouse', 'dragon who loves books', 'girl who finds magic paintbrush'")
-        user_input = input("\nYour story idea (or 'back' to return to menu): ").strip()
-        if user_input.lower() == 'back':
-            return
-        if not user_input:
-            print("I need an idea to work with! Try again.")
-            continue
-        try:
-            # validate input first
-            processed_input = input_handler.process_input(user_input)
-            if not processed_input["valid"]:
-                print(f"\n{processed_input['suggestion']}")
-                continue
+    """Create a new bedtime story"""
+    
+    print("\n📖 What story shall we create tonight?")
+    print("💡 Try: 'a girl named Luna and her best friend Max, who happens to be a dragon'")
+    
+    user_input = input("\n➤ Your idea: ").strip()
+    
+    if user_input.lower() in ['menu', 'back', 'exit', '']:
+        return False
+    
+    try:
+        # Process the idea
+        print("\n✨ Creating your story", end="")
+        processed = input_handler.process_input(user_input)
+        
+        if not processed["valid"]:
+            print(f"\n\n💭 {processed['suggestion']}")
+            return True
+        
+        print(".", end="", flush=True)
+        
+        # Generate the story AND outline
+        story, outline = story_generator.generate_story(processed["story_elements"])
+        print(".", end="", flush=True)
+        
+        # Show outline
+        if outline:
+            print(".")
+            display_outline(outline)
+            print("\n⏳ Writing full story", end="")
+        
+        # Evaluate quality
+        print(".", end="", flush=True)
+        scores = judge_system.evaluate_story(story)
+        
+        # Safety check
+        if not scores.get("safety_passed", True):
+            print("\n\n⚠️  Let's try a different story idea!")
+            return True
+        
+        print(".", end="", flush=True)
+        
+        # Refine the story
+        print("\n🔧 Polishing", end="")
+        final_story = story
+        final_scores = scores
+        
+        refined = story_generator.refine_story(story, outline, scores)
+        if refined['story'] != story['story']:
+            print(".", end="", flush=True)
             
-            # generate initial story
-            print("\nCreating your story...")
-            initial_story = story_generator.generate_story(processed_input["story_elements"])
-            initial_scores = judge_system.evaluate_story(initial_story)
+            # Show what was improved
+            if refined.get('improvements'):
+                print(f" ✨")
+                print(f"   📝 {refined['improvements']}")
             
-            # safety check on initial story
-            if not initial_scores.get("safety_passed", True):
-                print("\nStory didn't pass safety check. Let's try a different idea!")
-                continue
+            # Re-evaluate the refined story
+            refined_scores = judge_system.evaluate_story(refined)
             
-            # refine the story based on judge feedback
-            print("Refining the story...")
-            refined_story = story_generator.refine_story(initial_story, initial_scores)
-            final_scores = judge_system.evaluate_story(refined_story)
+            # Only use refined version if it actually improved
+            if refined_scores.get("overall_score", 0) > scores.get("overall_score", 0):
+                final_story = refined
+                final_scores = refined_scores
+                print("   ✅ Story improved!")
+            else:
+                print("   ↔️  Keeping original version")
+        else:
+            print(" Done!")
+        
+        # Save the story
+        story_tracker.add_story(
+            story=final_story, 
+            evaluation=final_scores, 
+            user_request=user_input
+        )
+        
+        # Display the story
+        word_count = len(final_story['story'].split())
+        reading_time = max(1, word_count // 150)
+        
+        print("\n" + "=" * 50)
+        print("✨ YOUR BEDTIME STORY ✨".center(50))
+        print("=" * 50)
+        print(f"\n📚 {final_story['title']}")
+        print(f"⏱️  About {reading_time} minute{'s' if reading_time > 1 else ''} to read")
+        print("-" * 50)
+        print(f"\n{final_story['story']}")
+        print(f"\n💫 {final_story['moral']}")
+        print("-" * 50)
+        
+        # Show quality
+        display_scores(final_scores)
+        
+        # Q&A section
+        print("\n💬 Got questions about the story?")
+        qa_questions = qa_agent.generate_question_opportunities(final_story)
+        
+        if qa_questions:
+            print("Here are some things you could ask:")
+            for i, q in enumerate(qa_questions[:3], 1):
+                print(f"  {i}. {q}")
             
-            story_result = refined_story
-            judge_scores = final_scores
+            print("\n(Ask a question or press Enter to finish)")
             
-            story_tracker.add_story(
-                story=story_result, 
-                evaluation=judge_scores, 
-                user_request=user_input
-            )
-            
-            if not judge_scores.get("safety_passed", True):
-                print("\nRefined story didn't pass safety check. Let's try a different idea!")
-                continue
-            
-            print("\n" + "YOUR STORY".center(50))
-            print("=" * 50)
-            print(f"\n📖 {story_result['title']}")
-            print(f"\n{story_result['story']}")
-            print(f"\n💫 {story_result['moral']}")
-            
-            display_scores(judge_scores)
-            
-            # Q&A
-            qa_questions = qa_agent.generate_question_opportunities(story_result)
-            print(f"\nQuestions you might ask about this story:")
-            for i, q in enumerate(qa_questions, 1):
-                print(f"   {i}. {q}")
-            
-            questions_asked = 0
-            while questions_asked < 3:
-                question = input(f"\nAsk a question ({3-questions_asked} left, or 'done'): ").strip()
-                if question.lower() == 'done' or not question:
+            asked = 0
+            while asked < 3:
+                question = input(f"\n❓ ").strip()
+                if not question:
                     break
-                
-                answer = qa_agent.answer_question(question, story_result)
-                print(f"\n{answer}")
-                questions_asked += 1
-            
-            print(f"\n🌙 Story complete! Press Enter to return to menu...")
-            input()
-            return
-            
-        except Exception as e:
-            print(f"\nSomething went wrong: {e}")
-            print("Let's try again!")
-            continue
+                    
+                answer = qa_agent.answer_question(question, final_story)
+                print(f"\n💡 {answer}")
+                asked += 1
+        
+        print("\n✨ Story complete!")
+        input("Press Enter to continue...")
+        return True
+        
+    except Exception:
+        print(f"\n\nOops! Let's try again with a different idea.")
+        return True
 
 def main():
+    """Run Beanstalk AI"""
+    
+    # Set up
     input_handler = InputHandler(call_model)
     story_generator = StoryGenerator(call_model)
     judge_system = JudgeSystem(call_model)
     qa_agent = QAAgent(call_model)
     story_tracker = StoryTracker()
     
+    print("\n🌟 Welcome to Beanstalk AI!")
+    print("   Where bedtime stories come to life...")
+    
     while True:
         show_menu()
         
+        # Show stats if we have stories
         stats = story_tracker.get_stats()
         if stats["total"] > 0:
-            print(f"{stats['total']} stories created | Avg score: {stats['average_score']}/10")
+            avg_score = stats['average_score']
+            print(f"📚 Stories created: {stats['total']} (avg: {avg_score:.1f}/10)")
         
-        choice = input("\nChoose an option (1-3): ").strip()
+        choice = input("\n➤ Choose: ").strip()
         
-        if choice == '3':
-            print("\n🌙✨ Sweet dreams! Thanks for using Beanstalk AI! ✨🌙")
-            break
+        if choice == '1':
+            # Create stories
+            creating = True
+            while creating:
+                creating = create_story(
+                    input_handler, 
+                    story_generator, 
+                    judge_system, 
+                    qa_agent, 
+                    story_tracker
+                )
+                
         elif choice == '2':
+            # View report
             if stats["total"] == 0:
-                print("\nNo stories yet! Create your first story to see the report.")
-                continue
-            story_tracker.generate_html_report()
-            print("\nReport saved as 'story_report.html' - open it in your browser!")
-            input("Press Enter to continue...")
-        elif choice == '1':
-            create_story(input_handler, story_generator, judge_system, qa_agent, story_tracker)
+                print("\n📭 No stories yet! Create one first.")
+            else:
+                story_tracker.generate_html_report()
+                print("\n✅ Report saved as 'story_report.html'")
+                print("   Open it in your browser to see your stories!")
+            input("\nPress Enter to continue...")
+            
+        elif choice == '3':
+            # Exit
+            print("\n🌙 Sweet dreams!")
+            print("   Thanks for using Beanstalk AI")
+            break
+            
         else:
-            print("\nPlease choose 1, 2, or 3")
+            print("\n❌ Just type 1, 2, or 3")
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("\n\n👋 Goodbye! Sweet dreams!")
+    except Exception as e:
+        print(f"\n❌ Something went wrong: {e}")
+        print("Please restart the app.")

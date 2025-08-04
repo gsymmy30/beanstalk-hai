@@ -3,67 +3,104 @@ from typing import Dict, Callable
 from utils.prompts import StoryGenerationPrompts
 
 class StoryGenerator:
-    """
-    Core story generator and refiner
-    """
+   """Story generator with two-phase approach"""
+   
+   def __init__(self, llm_call_function: Callable):
+       self.call_model = llm_call_function
+   
+   def _clean_json(self, text: str) -> Dict:
+    """Parse JSON from LLM response, preserving newlines"""
+    text = text.strip()
+    if text.startswith('```json'):
+        text = text[7:]
+    if text.endswith('```'):
+        text = text[:-3]
     
-    def __init__(self, llm_call_function: Callable):
-        self.call_model = llm_call_function
+    # Fix JSON syntax issues
+    text = text.replace(',]', ']').replace(',}', '}')
     
-    def generate_story(self, story_request: str) -> Dict:
-        """
-        Generate a complete bedtime story with title, narrative, and moral.
+    # Parse JSON
+    result = json.loads(text)
+    
+    # Ensure story has proper paragraph breaks
+    if isinstance(result, dict) and 'story' in result:
+        story = result['story']
         
-        Args:
-            story_request: Processed story request from InputHandler
+        # If story lacks paragraph breaks, add them intelligently
+        if '\n\n' not in story and len(story) > 100:
+            # Split on sentence boundaries that likely indicate new paragraphs
+            sentences = story.split('. ')
             
-        Returns:
-            {
-                "title": str,
-                "story": str,
-                "moral": str
-            }
-        """
-        # ref to the prompt library at utils/prompts.py
-        generation_prompt = StoryGenerationPrompts.complete_story_prompt(story_request)
-
-        try:
-            response = self.call_model(generation_prompt, max_tokens=3000, temperature=0.7)
-            result = json.loads(response)
-            if not all(key in result for key in ["title", "story", "moral"]):
-                raise ValueError("Invalid story format")
-            return result
+            # Rebuild with paragraph breaks at logical points
+            paragraphs = []
+            current_paragraph = []
             
-        except (json.JSONDecodeError, ValueError, KeyError):
-            return self._create_fallback_story(story_request)
+            for i, sentence in enumerate(sentences):
+                # Add sentence to current paragraph
+                current_paragraph.append(sentence + ('.' if not sentence.endswith('.') else ''))
+                
+                # Start new paragraph after 3-4 sentences or at scene changes
+                if (len(current_paragraph) >= 3 or 
+                    any(marker in sentence for marker in ['One day', 'That night', 'Suddenly', 'The next', 'Later'])):
+                    paragraphs.append(' '.join(current_paragraph))
+                    current_paragraph = []
+            
+            # Add any remaining sentences
+            if current_paragraph:
+                paragraphs.append(' '.join(current_paragraph))
+            
+            # Join with double newlines
+            result['story'] = '\n\n'.join(paragraphs)
     
-    def refine_story(self, original_story: Dict, judge_feedback: Dict) -> Dict:
-        """
-        Refine a story based on judge feedback to improve quality.
-        
-        Args:
-            original_story: Original story dict with title, story, moral
-            judge_feedback: Judge evaluation with scores and feedback
-            
-        Returns:
-            Refined story dict
-        """
-        # ref to the prompt library at utils/prompts.py
-        refinement_prompt = StoryGenerationPrompts.story_refinement_prompt(original_story, judge_feedback)
-        try:
-            response = self.call_model(refinement_prompt, max_tokens=2000, temperature=0.3)
-            result = json.loads(response)
-            if not all(key in result for key in ["title", "story", "moral"]):
-                raise ValueError("Invalid refined story format")
-            return result
-            
-        except (json.JSONDecodeError, ValueError, KeyError):
-            print("Refinement failed, using original story")
-            return original_story
-    
-    def _create_fallback_story(self, story_request: str) -> Dict:
-        return {
-            "title": "A Magical Adventure",
-            "story": f"Once upon a time, there was a kind and curious child who loved adventures. One evening, they discovered something wonderful that led to an amazing journey filled with friendship and joy. After their adventure, they returned home feeling happy and safe, ready for sweet dreams.",
-            "moral": "Every day holds the possibility of magic and wonder."
-        }
+    return result
+   
+   def generate_story(self, story_request: str) -> tuple[Dict, Dict]:
+       """Generate story and return both story and outline"""
+       try:
+           # Get outline
+           outline = self._clean_json(
+               self.call_model(
+                   StoryGenerationPrompts.generate_outline_prompt(story_request),
+                   max_tokens=1500,
+                   temperature=0.7
+               )
+           )
+           
+           # Get story from outline
+           story = self._clean_json(
+               self.call_model(
+                   StoryGenerationPrompts.write_story_from_outline_prompt(outline),
+                   max_tokens=3000,
+                   temperature=0.7
+               )
+           )
+           
+           return story, outline
+           
+       except:
+           # Fallback
+           return {
+               "title": "A Magical Adventure",
+               "story": "Once upon a time, there was a curious young explorer who discovered a hidden forest full of wonders...",
+               "moral": "Every day holds the possibility of magic."
+           }, {}
+   
+   def refine_story(self, story: Dict, outline: Dict, feedback: Dict) -> Dict:
+       """Refine story using outline and feedback"""
+       try:
+           refined = self._clean_json(
+               self.call_model(
+                   StoryGenerationPrompts.story_refinement_prompt(story, feedback, outline),
+                   max_tokens=3000,
+                   temperature=0.3
+               )
+           )
+           
+           # Validate refined story has required fields
+           if all(key in refined for key in ["title", "story", "moral"]):
+               return refined
+               
+       except:
+           pass
+       
+       return story  # Return original if refinement fails

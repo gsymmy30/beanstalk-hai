@@ -47,370 +47,206 @@ Input: "my cat died" → {{"valid": false, "story_elements": "", "suggestion": "
 Now analyze: "{user_input}"
 """
 
-from typing import Dict
-
 class StoryGenerationPrompts:
-    """Prompts for story generation"""
+    """Prompts for two-phase story generation"""
 
     @staticmethod
-    def complete_story_prompt(story_request: str) -> str:
+    def generate_outline_prompt(story_request: str) -> str:
         return f"""
-You are writing a bedtime story that creates a calm environment to help children relax and drift into peaceful sleep.
+Create a bedtime story outline for ages 5-10 based on: "{story_request}"
 
-REQUEST: "{story_request}"
+Design a story with:
+- The protagonist from "{story_request}" (age 5-10 or equivalent in their species)
+- EXACTLY 2 helper characters (no more, no less)
+- A problem that needs solving
+- EXACTLY 3 key events
+- Concrete actions leading to resolution
+- Leading to peaceful sleep
 
-STEP 1: ANALYZE THE REQUEST
-First, think about:
-- What gentle theme fits this request? (kindness, friendship, helping, family, gentle exploration)
-- What type of calming story works best? (friendship bonding, gentle discovery, helping others, cozy adventure)
-- What familiar setting would be most comforting? (home, garden, forest, library, neighborhood)
-- Who should be the gentle main character and what endearing trait do they have?
+Return this EXACT JSON structure with ALL fields filled:
 
-STEP 2: CHOOSE YOUR BEDTIME STORY STRUCTURE
-
-FRIENDSHIP: Character feels lonely → meets kind helpers → they share something special → bond through caring → cozy together
-
-HELPING STORY: Character finds someone who needs help → gathers caring friends → work together kindly → everyone feels better → peaceful satisfaction
-
-COZY DISCOVERY: Character finds something interesting → shares discovery with friends → explore together gently → learn something wonderful → settle down content
-
-ADVENTURE: Character wants to find something → meets helpful friends → journey together safely → find what they sought → rest together happily
-
-STEP 3: BEDTIME STORY ESSENTIALS
-
-Your story must balance gentle engagement with deep relaxation:
-
-SOOTHING LANGUAGE PROGRESSION:
-Opening: Warm, welcoming tone - "Maya loved," "friends gathered," "they discovered"
-Middle: Gentle cooperation - "softly helped," "kindly shared," "peacefully worked together"  
-Ending: Lullaby-like calm - "quietly settled," "drifted contentedly," "slept peacefully"
-
-CALMING CHARACTER INTERACTIONS:
-- Main character has one gentle, endearing trait (organizes things by color, hums while working, gives warm hugs)
-- 2-3 helper characters who are immediately kind and welcoming
-- All characters show patience, understanding, and genuine care for each other
-- Dialogue reveals warmth: "I'd love to help!" "That sounds wonderful!" "We make a great team!"
-
-PEACEFUL PACING:
-- Unfold story gently without rushing or pressure
-- Use familiar, safe settings that instill comfort
-- Build through cooperation and mutual care, not conflict
-- Resolve through friendship and kindness, creating feelings of safety and love
-
-STEP 4: WRITING REQUIREMENTS
-
-FORMAT: Write 8-10 scenes of 150-200 words each. Target 1200-1500 total words. Use \\n\\n between scenes.
-
-SCENE DEVELOPMENT - NO RUSHING ALLOWED:
-Scene 1: Character in familiar setting, show their gentle trait through specific actions (150-200 words)
-Scene 2: Gentle situation unfolds slowly, show character's thoughts and feelings (150-200 words)
-Scene 3: Meet first helper - show what they're doing, full conversation, personality revealed (200+ words)
-Scene 4: First helper joins journey, more dialogue showing their unique way of helping (150-200 words)  
-Scene 5: Meet second helper - again, show their activity, full conversation, distinct personality (200+ words)
-Scene 6: All characters work together, each contributing uniquely with dialogue throughout (200+ words)
-Scene 7: Peaceful resolution with characters sharing meaningful moments together (150-200 words)
-Scene 8: Extended cozy ending with characters bonding and preparing for rest (150-200 words)
-
-DIALOGUE REQUIREMENTS - BRING CHARACTERS TO LIFE:
-Each helper character must have:
-- 6-8 lines of dialogue minimum showing their unique personality
-- Distinct way of speaking that reveals who they are
-- Personal sharing about themselves or their interests
-- Natural conversations that build real connections
-- Realistic reactions and responses to other characters
-
-CHARACTER DEPTH REQUIREMENTS:
-Show each character:
-- What they're doing when first encountered (be specific)
-- How they react to meeting others (show their personality)
-- What makes them unique (speech patterns, interests, habits)
-- How they contribute their special talents to helping
-- Personal moments of connection with main character
-
-EXPANDED INTERACTION SCENES:
-Instead of "they met Luna who offered to help" write:
-"Perched on a low branch, Luna was carefully arranging fallen leaves into neat piles by size. Her feathers were a soft brown with silver tips that caught the moonlight. When she heard footsteps, she looked up with bright amber eyes. 'Oh my! Hello there,' Luna hooted gently. 'I was just organizing these leaves - I can't help myself, everything looks better when it's tidy. Are you two lost? I know every tree and path in this forest.' Drake smiled, feeling an instant connection with someone else who loved organizing. 'We're looking for this little one's family,' he explained, holding up the squirrel. Luna's expression immediately grew warm and concerned. 'Of course I'll help! Family is the most important thing. I have three little owlets of my own, and I would want someone to help them if they were lost.'"
-
-SOUL AND EMOTION REQUIREMENTS:
-Show characters:
-- Genuinely caring about each other's wellbeing
-- Sharing personal details that create real bonds
-- Having small moments of understanding and connection
-- Learning something meaningful from each interaction
-- Growing closer through their shared journey
-
-PACING RULE:
-Take your time with each scene. Don't rush to the next plot point. Let conversations develop naturally. Show characters getting to know each other gradually.
-
-BEDTIME LANGUAGE REQUIREMENTS:
-- Use rhythmic, melodic phrases that flow like a lullaby
-- Include gentle repetition that soothes: "softly," "gently," "peacefully"
-- Choose warm, soft words over sharp or harsh sounds
-- End with cozy imagery: soft grass, warm starlight, gentle breezes, comfortable nests
-
-FORBIDDEN ELEMENTS:
-- Any scary, intense, or stimulating situations
-- Conflicts or disagreements between characters
-- Time pressure, deadlines, or urgent problems
-- Chase scenes, loud noises, or exciting action
-- AI phrases: "heart filled with," "magical bond," "shimmered with"
-- Unresolved problems or stimulating endings
-
-POSITIVE SLEEP PREPARATION:
-Your ending must show characters feeling completely safe, loved, and content - mirroring the peaceful state children should feel as they drift toward sleep.
-
-Respond with JSON:
 {{
-    "title": "Gentle title reflecting the story's calming journey",
-    "story": "Complete bedtime story with scene breaks using \\n\\n, following your chosen structure",
-    "moral": "Simple lesson about kindness, friendship, or gentle caring that emerges naturally"
+    "protagonist": {{
+        "name": "character name",
+        "age": "5-10 or young [species]",
+        "personality": "key trait",
+        "type": "human/dragon/mouse/etc"
+    }},
+    "helpers": [
+        {{"name": "first helper", "type": "species", "role": "their role"}},
+        {{"name": "second helper", "type": "species", "role": "their role"}}
+    ],
+    "setting": "location",
+    "conflict": "problem",
+    "key_events": [
+        "first event",
+        "second event",
+        "third event"
+    ],
+    "journey": "what happens",
+    "resolution": "how it ends peacefully",
+    "theme": "lesson"
 }}
+
+Return ONLY the complete JSON above with your content filled in. No explanations.
 """
+
     @staticmethod
-    def story_refinement_prompt(original_story: Dict, judge_feedback: Dict) -> str:
+    def write_story_from_outline_prompt(outline: Dict) -> str:
+        protagonist = outline.get('protagonist', {})
+        helpers = ', '.join([f"{h['name']} the {h['type']}" for h in outline.get('helpers', [])])
+        
         return f"""
-You are refining a bedtime story based on judge feedback to improve its quality.
+Write a complete 800-word bedtime story based on this outline:
 
-ORIGINAL STORY:
-Title: {original_story['title']}
-Story: {original_story['story']}
-Moral: {original_story['moral']}
-Current Score: {judge_feedback.get('overall_score', 0)}/10
+MAIN CHARACTER: {protagonist.get('name')}, age {protagonist.get('age')}, who is {protagonist.get('personality')}
+FRIENDS: {helpers}
+SETTING: {outline.get('setting')}
+PROBLEM: {outline.get('conflict')}
+KEY EVENTS: {outline.get('key_events', outline.get('magical_events', []))}
+WHAT HAPPENS: {outline.get('journey')}
+ENDING: {outline.get('resolution')}
+THEME: {outline.get('theme')}
 
-JUDGE FEEDBACK TO ADDRESS [focus on what can be improved and then improve that]:
-- Character Connection ({judge_feedback.get('character_connection', 0)}/10): {judge_feedback.get('feedback', {}).get('character_connection', 'Needs improvement')}
-- Bedtime Appropriate ({judge_feedback.get('bedtime_appropriate', 0)}/10): {judge_feedback.get('feedback', {}).get('bedtime_appropriate', 'Needs improvement')}  
-- Storytelling Craft ({judge_feedback.get('storytelling_craft', 0)}/10): {judge_feedback.get('feedback', {}).get('storytelling_craft', 'Needs improvement')}
-- Age Appropriate ({judge_feedback.get('age_appropriate', 0)}/10): {judge_feedback.get('feedback', {}).get('age_appropriate', 'Needs improvement')}
+STORY REQUIREMENTS:
+• Show SPECIFIC things happening with visual details
+• Include the key events with concrete descriptions
+• Keep the story ACTIVE - show characters doing things
+• Natural dialogue between characters  
+• Gradual calming: exciting events → gentler activities → peaceful sleep
+• eventful story - innovative
+• Final paragraphs: calm bedtime activities (not abstract feelings)
+• Exactly 800 words
 
-REFINEMENT REQUIREMENTS:
-1. Keep the same basic story concept and characters
-2. Address the specific feedback points above
-3. Improve the lowest scoring areas
-4. Maintain proper bedtime story structure with scene breaks using \\n\\n
-5. Ensure 800-1200 words total length
-6. Keep the gentle, calming bedtime tone
+AVOID:
+• Vague descriptions ("something wonderful happened")
+• Too many feeling words ("heart swelled", "filled with joy")
+• Abstract endings - show actual bedtime routines/activities
+• Rushing through events - develop each one properly
 
-Respond with JSON:
+Write an engaging story where interesting things actually happen. Show actions and consequences.
+
+JSON response:
 {{
-    "title": "Title (can keep same if good)",
-    "story": "Improved story addressing the feedback points",
-    "moral": "Moral (can keep same if good)"
+    "title": "story title",
+    "story": "complete 800-word story",
+    "moral": "catchy moral of the story"
 }}
+REMINDER: Return ONLY valid JSON.
 """
+
+    @staticmethod
+    def story_refinement_prompt(original_story: Dict, judge_feedback: Dict, outline: Dict = None) -> str:
+        feedback_lines = []
+        feedback_dict = judge_feedback.get('feedback', {})
+        for dim, feedback in feedback_dict.items():
+            if feedback and isinstance(feedback, str):
+                feedback_lines.append(f"• {feedback}")
+        feedback_text = '\n'.join(feedback_lines) if feedback_lines else "• Enhance character personality\n• Add more sensory details"
+        original_word_count = len(original_story['story'].split())
+        return f"""
+You are a master editor. Edit this bedtime story to address the feedback below.
+
+ORIGINAL STORY: "{original_story['story']}"
+
+FEEDBACK TO ADDRESS:
+{feedback_text}
+
+ADD DIALOGUE throughout the story - characters should talk to each other! Replace narration with conversation where possible
+
+EXPANSION REQUIREMENTS:
+1. ADD more details to existing scenes - don't remove anything
+2. EXPAND character thoughts and feelings
+3. EXTEND descriptions with sensory details (sights, sounds, smells)
+4. DEVELOP dialogue - make conversations more natural and detailed (more back and forth)
+5. ENHANCE transitions between scenes
+6. ELABORATE on the setting and atmosphere
+
+DO NOT: Summarize, condense, or remove any content. Only ADD and ENHANCE.
+
+JSON response:
+{{
+    "title": "{original_story['title']}",
+    "story": "[edited story with improvements]",
+    "moral": "{original_story['moral']}",
+    "improvements": "A brief summary of what was improved"
+}}"""
+
 
 class JudgePrompts:
-    """Research-backed prompts for bedtime story evaluation system"""
+    """Streamlined prompts for bedtime story evaluation"""
     
     @staticmethod
     def safety_evaluation_prompt(story: Dict) -> str:
         return f"""
-You are evaluating if this bedtime story is SAFE for children aged 5-10.
+Check if this bedtime story is safe for ages 5-10.
 
-STORY TO CHECK:
-Title: {story['title']}
-Story: {story['story']}
-Moral: {story['moral']}
+STORY: {story['title']}
 
-SAFETY REQUIREMENTS (MUST ALL BE MET):
-- No profanity, violence, death, serious injury, or trauma
-- No genuinely scary, frightening, or nightmarish content
-- No harmful stereotypes or negative messaging
-- Content should be comforting and reassuring for bedtime
-- Research shows best bedtime stories are "never scary and always positive"
+RED FLAGS:
+- Violence, death, injury, scary content
+- Inappropriate themes or language
+- Anything that could cause nightmares
 
-Respond ONLY with valid JSON:
+JSON response:
 {{
     "passed": true/false,
-    "issues": "specific safety concerns if failed, empty if passed"
-}}
-"""
+    "issues": "specific problems if failed, empty if passed"
+}}"""
     
     @staticmethod
     def detailed_evaluation_prompt(story: Dict, length_analysis: Dict) -> str:
+        word_count = length_analysis.get('word_count', 0)
+        
         return f"""
-You are an EXPERT JUDGE evaluating bedtime stories against PROFESSIONAL children's literature standards. BE CRITICAL AND REALISTIC.
+Evaluate this bedtime story for ages 5-10. Be critical but fair.
 
-STORY TO EVALUATE:
-Title: {story['title']}
-Story: {story['story']}
-Moral: {story['moral']}
+STORY: {story['title']} ({word_count} words)
 
-CRITICAL SCORING GUIDELINES:
-- Only exceptional, professional-quality stories earn 8-10
-- Be harsh about AI patterns, generic elements, and structural issues
-- 7+ scores should be RARE and only for truly excellent work
+Rate 1-10:
 
-Rate each dimension 1-10 with ONE DECIMAL PRECISION (e.g., 7.3, 8.7):
+CHARACTER ("character_connection"):
+- Does the protagonist have personality?
+- Do they solve problems themselves?
+- Is dialogue natural for kids?
 
-=== 1. CHARACTER CONNECTION (30% weight) ===
+BEDTIME APPROPRIATE ("bedtime_appropriate"):
+- Does energy decrease toward the end?
+- Is the ending calm with sleep imagery?
+- Are conflicts resolved peacefully?
 
-AUTOMATIC SCORE PENALTIES:
-- No specific personality quirks or authentic voice: MAXIMUM 5.5
+STORYTELLING CRAFT ("storytelling_craft"):
+- Is it engaging
+- Specific details vs vague descriptions?
 
-9-10 EXCEPTIONAL (VERY RARE):
-- Child protagonist with SPECIFIC, unique personality (not just "curious/brave")
-- Rich internal monologue showing authentic child thinking patterns
-- Protagonist solves EVERY problem through their own thinking and effort
-- Meaningful character arc with clear growth from beginning to end
-- Dialogue that sounds like real children speak, with imperfections
+AGE-FIT ("age_appropriate"):
+- Vocabulary right for 5-10 year olds?
+- Child empowerment
+- Lesson emerges naturally vs preachy?
 
-7-8 STRONG:
-- Clear specific personality traits beyond generic descriptors
-- Character makes all major decisions independently
-- Some internal emotional life visible
-- Natural-sounding dialogue for age group
+SCORING BOUNDARIES:
+8-10: Great story - perfect for bedtime
+7-8: Good story - works well and well-crafted
+6-7: Solid story - achieves its purpose with some rough edges
+5-6: Decent story - functional but could be more engaging
+4-5: Basic story - has the elements but needs development
+3-4: Needs work - missing important elements or has issues
+1-3: Significant problems - requires major revision
 
-5-6 ADEQUATE:
-- Basic child protagonist but lacks depth
-- Some decision-making but may rely on luck/magic
-- Surface-level emotions only
-- Generic or stilted dialogue
 
-3-4 WEAK:
-- Generic "curious child" archetype with no unique traits
-- Adult figures or magic solve main problems
-- No authentic emotional depth
-- Artificial or missing dialogue
-
-1-2 POOR:
-- No clear personality at all
-- Child is passive observer, not active participant
-- Zero emotional authenticity
-- Story happens TO child, not driven BY child
-
-=== 2. BEDTIME APPROPRIATE (25% weight) ===
-
-AUTOMATIC SCORE PENALTIES:
-- Wall of text with no paragraph breaks: MAXIMUM 5.0
-- Same energy level throughout (no wind-down): MAXIMUM 5.0
-- Abrupt ending without sleepy imagery: MAXIMUM 6.0
-- No cozy, peaceful final scene: MAXIMUM 6.0
-
-9-10 EXCEPTIONAL (VERY RARE):
-- Perfect energy curve: exciting hook → engaging adventure → gradual calming → sleepy ending
-- Final scene explicitly shows characters getting drowsy/ready for sleep
-- Language becomes noticeably softer and more soothing toward end
-- Cozy imagery: soft blankets, warm light, gentle sounds, comfortable spaces
-- Zero unresolved tensions that could cause bedtime anxiety
-
-7-8 STRONG:
-- Clear energy progression from active to calm
-- Good wind-down in final quarter of story
-- Peaceful, reassuring ending with some sleepy elements
-- Most conflicts resolved satisfactorily
-
-5-6 ADEQUATE:
-- Some attempt at energy management but inconsistent
-- Ending is peaceful but lacks proper bedtime imagery
-- Conflicts mostly resolved but transition feels abrupt
-
-3-4 WEAK:
-- Poor formatting (wall of text, hard to read aloud)
-- Maintains same energy throughout or suddenly drops off
-- Ending doesn't prepare child for sleep
-- Some tensions left unresolved
-
-1-2 POOR:
-- No energy management whatsoever
-- Actually stimulating rather than calming
-- Cliffhanger or anxiety-inducing elements
-- Would actively prevent sleep
-
-=== 3. STORYTELLING CRAFT (25% weight) ===
-
-9-10 EXCEPTIONAL (VERY RARE):
-- Unique, compelling opening that immediately establishes character and conflict
-- Flawless narrative structure with proper paragraph breaks for read-aloud flow
-- Completely natural voice that feels human-written, not AI-generated
-- Specific, vivid details that create immersive world (not generic descriptions)
-- Surprising plot elements that feel organic, not forced
-- Professional-quality prose that flows beautifully when read aloud
-
-7-8 STRONG:
-- Engaging opening that draws reader in
-- Good story structure with clear progression and readable formatting
-- Mostly authentic voice with few artificial moments
-- Specific setting details that enhance the story
-- Some creative elements that feel fresh
-
-5-6 ADEQUATE:
-- Basic opening but may lack immediate engagement
-- Acceptable structure but formatting issues (long paragraphs)
-- Somewhat artificial voice but readable
-- Generic setting descriptions
-- Predictable but functional plot
-
-3-4 WEAK:
-- Weak or generic opening
-- Poor structure with wall-of-text formatting
-- Obviously artificial voice with many AI patterns
-- Heavy reliance on cliches and vague descriptions
-- Entirely predictable plot progression
-
-1-2 POOR:
-- No engaging hook whatsoever
-- Completely unreadable formatting (giant paragraphs)
-- Entirely AI-generated feel with generic patterns throughout
-- No specific details, all vague descriptions
-- Incoherent or missing plot structure
-
-=== 4. AGE APPROPRIATE (20% weight) ===
-
-9-10 EXCEPTIONAL (VERY RARE):
-- Perfect complexity: sophisticated enough to engage 8-year-olds, simple enough for 5-year-olds
-- Brilliant balance of fantasy and familiar elements
-- Rich vocabulary that naturally teaches new words in context
-- Universal themes emerge organically from character actions (not stated)
-- Empowers children and shows their capability
-- Moral lesson feels natural, not preachy
-
-7-8 STRONG:
-- Good complexity level for target age range
-- Nice balance of imaginative and familiar elements
-- Some vocabulary enrichment with accessible new words
-- Clear positive themes that feel natural
-- Generally empowering for children
-
-5-6 ADEQUATE:
-- Mostly age-appropriate but may be too simple or complex
-- Basic imaginative elements
-- Limited vocabulary expansion
-- Themes present but may feel somewhat forced
-
-3-4 WEAK:
-- Wrong complexity level for age group
-- Poor balance of fantasy/reality
-- No vocabulary enrichment OR inappropriately complex words
-- Themes feel preachy or unclear
-- Adult intervention undermines child empowerment
-
-1-2 POOR:
-- Completely inappropriate for age group
-- No educational value or vocabulary development
-- No positive themes or empowerment
-- Actively harmful messaging
-
-CRITICAL REMINDERS:
-- PARAGRAPH STRUCTURE MATTERS: Wall of text = automatic penalty
-- AI PATTERNS = LOWER SCORES: Generic phrases, predictable plots
-- ADULT INTERVENTION = MAJOR PENALTY: Kids must solve their own problems
-- 8+ SCORES ARE RARE: Only for truly exceptional, professional-quality work
-
-Respond ONLY with valid JSON:
+JSON response:
 {{
-    "character_connection": X.X,
-    "bedtime_appropriate": X.X,
-    "storytelling_craft": X.X,
-    "age_appropriate": X.X,
+    "character_connection": [score from 1-10, can use decimals],
+    "bedtime_appropriate": [score from 1-10, can use decimals],
+    "storytelling_craft": [score from 1-10, can use decimals],
+    "age_appropriate": [score from 1-10, can use decimals],
     "feedback": {{
-        "character_connection": "Detailed analysis against rubric - what level achieved and why. What specific flaws prevent higher score? What can be done to improve?",
-        "bedtime_appropriate": "Assessment of pacing and sleep preparation effectiveness. What can be done to improve?",
-        "storytelling_craft": "Evaluation of hook, structure, voice authenticity, AI patterns. What AI patterns and generic elements prevent higher score? What can be done to improve?",
-        "age_appropriate": "Analysis of complexity, themes, and developmental fit. What prevents this from being truly empowering for children? What can be done to improve?"
+        "character_connection": "What to fix: [specific actionable improvement]",
+        "bedtime_appropriate": "What to fix: [specific actionable improvement]",
+        "storytelling_craft": "What to fix: [specific actionable improvement]",
+        "age_appropriate": "What to fix: [specific actionable improvement]"
     }}
-}}
-"""
+}}"""
     
     @staticmethod
     def refinement_instructions_prompt(scores: Dict) -> str:

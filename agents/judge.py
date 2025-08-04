@@ -57,7 +57,7 @@ class JudgeSystem:
         # ref to the prompt library at utils/prompts.py
         evaluation_prompt = JudgePrompts.detailed_evaluation_prompt(story, length_analysis)
         try:
-            response = self.call_model(evaluation_prompt, max_tokens=3000, temperature=0.3)
+            response = self.call_model(evaluation_prompt, max_tokens=3000, temperature=0.8)
             evaluation = json.loads(response)
             overall_score = sum(
                 evaluation[dimension] * weight 
