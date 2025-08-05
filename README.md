@@ -87,6 +87,80 @@ What kind of books would be your favorite?
 
 ![Beanstalk AI Flow](flow-diagram.png)
 
+## 🏗️ System Architecture
+
+```mermaid
+graph TB
+    %% User Interface
+    User[fa:fa-user User]
+    CLI[fa:fa-terminal CLI Menu<br/>main.py]
+    
+    %% Core Story Pipeline
+    InputHandler[fa:fa-filter Input Handler<br/>Validates input<br/>Filters inappropriate<br/>Enhances ideas]
+    
+    StoryGen[fa:fa-pencil Story Generator<br/>Two-phase generation:<br/>1. Outline creation<br/>2. Story writing]
+    
+    Judge[fa:fa-balance-scale Judge System<br/>Safety gatekeeper<br/>4-dimension scoring:<br/>• Bedtime readiness<br/>• Creative spark<br/>• Story quality<br/>• Age readability]
+    
+    QA[fa:fa-comments Story Q&A<br/>Generates questions<br/>Answers contextually]
+    
+    %% Data & Analytics
+    Tracker[fa:fa-database Story Tracker<br/>Saves stories<br/>User feedback<br/>Metrics]
+    
+    Report[fa:fa-chart-line HTML Dashboard<br/>story_report.html<br/>Analytics & scores]
+    
+    JSONData[(fa:fa-file story_metrics.json<br/>Persistent storage)]
+    
+    %% External Service
+    OpenAI[fa:fa-brain OpenAI GPT-3.5<br/>LLM Service]
+    
+    %% Prompt Management
+    Prompts[fa:fa-book Prompt Library<br/>utils/prompts.py<br/>Centralized templates:<br/>• Input validation<br/>• Story generation<br/>• Judge evaluation<br/>• Q&A responses]
+    
+    %% Main Flow
+    User -->|Story idea| CLI
+    CLI --> InputHandler
+    InputHandler -->|Valid input| StoryGen
+    StoryGen -->|Generated story| Judge
+    
+    %% Refinement Loop
+    Judge -->|Pass| QA
+    Judge -->|Needs improvement| StoryGen
+    
+    %% Post-Story Flow
+    QA --> CLI
+    CLI -->|Display story| User
+    User -->|Like/Dislike| CLI
+    
+    %% Data Flow
+    CLI -->|Save| Tracker
+    Tracker --> JSONData
+    Tracker -->|Generate| Report
+    
+    %% LLM Integration
+    InputHandler -.->|uses| Prompts
+    StoryGen -.->|uses| Prompts
+    Judge -.->|uses| Prompts
+    QA -.->|uses| Prompts
+    
+    InputHandler -->|API call| OpenAI
+    StoryGen -->|API call| OpenAI
+    Judge -->|API call| OpenAI
+    QA -->|API call| OpenAI
+    
+    %% Styling
+    classDef interface fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
+    classDef pipeline fill:#f3e5f5,stroke:#6a1b9a,stroke-width:2px
+    classDef storage fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef external fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    classDef utility fill:#fff8e1,stroke:#f57c00,stroke-width:2px
+    
+    class User,CLI interface
+    class InputHandler,StoryGen,Judge,QA pipeline
+    class Tracker,Report,JSONData storage
+    class OpenAI external
+    class Prompts utility
+
 ### Key Components
 
 🛡️ **Input Handler** - Handles ANY input, filters inappropriate content, provides suggestions  
