@@ -92,30 +92,30 @@ What kind of books would be your favorite?
 ```mermaid
 graph TB
     %% User Interface
-    User[fa:fa-user User]
-    CLI[fa:fa-terminal CLI Menu<br/>main.py]
+    User[User]
+    CLI[CLI Menu<br/>main.py]
     
     %% Core Story Pipeline
-    InputHandler[fa:fa-filter Input Handler<br/>Validates input<br/>Filters inappropriate<br/>Enhances ideas]
+    InputHandler[Input Handler<br/>Validates input<br/>Filters inappropriate<br/>Enhances ideas]
     
-    StoryGen[fa:fa-pencil Story Generator<br/>Two-phase generation:<br/>1. Outline creation<br/>2. Story writing]
+    StoryGen[Story Generator<br/>Two-phase generation:<br/>1. Outline creation<br/>2. Story writing]
     
-    Judge[fa:fa-balance-scale Judge System<br/>Safety gatekeeper<br/>4-dimension scoring:<br/>• Bedtime readiness<br/>• Creative spark<br/>• Story quality<br/>• Age readability]
+    Judge[Judge System<br/>Safety gatekeeper<br/>4-dimension scoring:<br/>• Bedtime readiness<br/>• Creative spark<br/>• Story quality<br/>• Age readability]
     
-    QA[fa:fa-comments Story Q&A<br/>Generates questions<br/>Answers contextually]
+    QA[Story Q&A<br/>Generates questions<br/>Answers contextually]
     
     %% Data & Analytics
-    Tracker[fa:fa-database Story Tracker<br/>Saves stories<br/>User feedback<br/>Metrics]
+    Tracker[Story Tracker<br/>Saves stories<br/>User feedback<br/>Metrics]
     
-    Report[fa:fa-chart-line HTML Dashboard<br/>story_report.html<br/>Analytics & scores]
+    Report[HTML Dashboard<br/>story_report.html<br/>Analytics & scores]
     
-    JSONData[(fa:fa-file story_metrics.json<br/>Persistent storage)]
+    JSONData[(story_metrics.json<br/>Persistent storage)]
     
     %% External Service
-    OpenAI[fa:fa-brain OpenAI GPT-3.5<br/>LLM Service]
+    OpenAI[OpenAI GPT-3.5<br/>LLM Service]
     
     %% Prompt Management
-    Prompts[fa:fa-book Prompt Library<br/>utils/prompts.py<br/>Centralized templates:<br/>• Input validation<br/>• Story generation<br/>• Judge evaluation<br/>• Q&A responses]
+    Prompts[Prompt Library<br/>utils/prompts.py<br/>Centralized templates:<br/>• Input validation<br/>• Story generation<br/>• Judge evaluation<br/>• Q&A responses]
     
     %% Main Flow
     User -->|Story idea| CLI
