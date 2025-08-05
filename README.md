@@ -92,30 +92,30 @@ What kind of books would be your favorite?
 ```mermaid
 graph TB
     %% User Interface
-    User[User]
-    CLI[CLI Menu<br/>main.py]
+    User[fa:fa-user User]
+    CLI[fa:fa-terminal CLI Menu<br/>main.py]
     
     %% Core Story Pipeline
-    InputHandler[Input Handler<br/>Validates input<br/>Filters inappropriate<br/>Enhances ideas]
+    InputHandler[fa:fa-filter Input Handler<br/>Validates input<br/>Filters inappropriate<br/>Enhances ideas]
     
-    StoryGen[Story Generator<br/>Two-phase generation:<br/>1. Outline creation<br/>2. Story writing]
+    StoryGen[fa:fa-pencil Story Generator<br/>Two-phase generation:<br/>1. Outline creation<br/>2. Story writing]
     
-    Judge[Judge System<br/>Safety gatekeeper<br/>4-dimension scoring:<br/>• Bedtime readiness<br/>• Creative spark<br/>• Story quality<br/>• Age readability]
+    Judge[fa:fa-balance-scale Judge System<br/>Safety gatekeeper<br/>4-dimension scoring:<br/>• Bedtime readiness<br/>• Creative spark<br/>• Story quality<br/>• Age readability]
     
-    QA[Story Q&A<br/>Generates questions<br/>Answers contextually]
+    QA[fa:fa-comments Story Q&A<br/>Generates questions<br/>Answers contextually]
     
     %% Data & Analytics
-    Tracker[Story Tracker<br/>Saves stories<br/>User feedback<br/>Metrics]
+    Tracker[fa:fa-database Story Tracker<br/>Saves stories<br/>User feedback<br/>Metrics]
     
-    Report[HTML Dashboard<br/>story_report.html<br/>Analytics & scores]
+    Report[fa:fa-chart-line HTML Dashboard<br/>story_report.html<br/>Analytics & scores]
     
-    JSONData[(story_metrics.json<br/>Persistent storage)]
+    JSONData[(fa:fa-file story_metrics.json<br/>Persistent storage)]
     
     %% External Service
-    OpenAI[OpenAI GPT-3.5<br/>LLM Service]
+    OpenAI[fa:fa-brain OpenAI GPT-3.5<br/>LLM Service]
     
     %% Prompt Management
-    Prompts[Prompt Library<br/>utils/prompts.py<br/>Centralized templates:<br/>• Input validation<br/>• Story generation<br/>• Judge evaluation<br/>• Q&A responses]
+    Prompts[fa:fa-book Prompt Library<br/>utils/prompts.py<br/>Centralized templates:<br/>• Input validation<br/>• Story generation<br/>• Judge evaluation<br/>• Q&A responses]
     
     %% Main Flow
     User -->|Story idea| CLI
@@ -160,6 +160,7 @@ graph TB
     class Tracker,Report,JSONData storage
     class OpenAI external
     class Prompts utility
+```
 
 ### Key Components
 
