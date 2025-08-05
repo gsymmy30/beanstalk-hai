@@ -42,45 +42,51 @@ Beanstalk AI is an intelligent bedtime story generator that creates personalized
 ## 📖 Example Usage
 
 ```
+## 🎮 Quick Flow Preview
+
+```bash
+$ python main.py
+
 🌱✨ BEANSTALK AI ✨🌱
 Magical Bedtime Stories for Kids 5-10
 
-  📖  1. Create a new story
-  📊  2. View story report  
-  🌙  3. Exit
+ 📖  1. Create a new story
+ 📊  2. View story report  
+ 🌙  3. Exit
 
-Choose an option (1-3): 1
+➤ Choose: 1
 
-📖 What kind of bedtime story would you like?
-Your story idea: dragon who loves books
+📖 What story shall we create tonight?
+➤ Your idea: a mouse who lives in a library
 
-Creating your story...
-Refining the story...
+✨ Creating your story...
+Improving story...
 
-📖 The Dragon Librarian
+📚 The Brave Library Mouse
+[... story content ...]
+💫 Even the smallest among us can be the bravest heroes.
 
-Once upon a time, in a cozy cave nestled deep...
-[Full story displayed]
+✅ Story Quality: 8.5/10
 
-💫 True treasure lies in sharing stories with others.
+💭 Did you enjoy this story? (Y/N)
+➤ Y
 
-Quality Scores
---------------------
-   Character     7.5/10
-   Bedtime       8.2/10
-   Storytelling  7.8/10
-   Age Level     7.0/10
-   Overall       7.65/10
+💬 Got questions about the story?
+ 1. What was Pip's favorite book to read?
+ 2. How did the other mice feel about Pip?
+ 3. What happened to the library cat?
 
-Questions you might ask:
-   1. What books does the dragon like best?
-   2. How do other animals feel about the dragon?
-   3. What would you do if you met this dragon?
+❓ What was Pip's favorite book to read?
 
-Ask a question: What books does the dragon like best?
+💡 I think Pip loved adventure stories the most...
 
-I think the dragon loves adventure books and fairy tales! 
-What kind of books would be your favorite?
+Press Enter to continue...
+
+📚 1 stories created
+
+➤ Choose: 3
+
+🌙 Sweet dreams!
 ```
 
 ## 🏗️ System Workflow

@@ -606,5 +606,101 @@
         "feedback": "Too short (291 words). Aim for 500-800 words for a 5-7 minute bedtime read."
       }
     }
+  },
+  {
+    "id": 20,
+    "timestamp": "2025-08-04T21:16:58.031425",
+    "user_request": "a person who has a wishing well",
+    "user_liked": true,
+    "story": {
+      "title": "Lily and the Magical Wishing Well",
+      "content": "Once upon a time in a quaint little town, there lived a young girl named Lily. Lily was known for her kind heart, adventurous spirit, and curious nature. She lived in a cozy house with her loyal dog, Sparky, who was always by her side.\n\nOne day, while playing in her backyard, Lily stumbled upon a hidden treasure - a magical wishing well.\n\nThe well shimmered with iridescent colors and emitted a soft, enchanting glow. Excited and curious, Lily approached the well with wonder in her eyes. 'I wonder if this well can grant wishes,' she thought.\n\nWith a hopeful heart, Lily made her first wish - to have the ability to fly. To her amazement, her wish came true! She soared through the sky with Sparky by her side, feeling the wind in her hair and the joy in her heart. Little did Lily know, her wish had caught the attention of a mischievous fairy named Twinkle.\n\nTwinkle, who was known for her magical powers, decided to pay Lily a visit. 'I see you have discovered the power of the magical wishing well,' Twinkle said with a gleam in her eye. 'But be careful, not all wishes bring happiness.' Sure enough, chaos soon ensued in the town when someone misused the well for their selfish desires.\n\nLily, Sparky, and Twinkle knew they had to make things right. Working together, they used their kindness, friendship, and magical abilities to restore peace and harmony to the town. In the end, the town was grateful for Lily's bravery and the power of the magical wishing well.\n\nAs the sun set and the stars twinkled above, Lily sat by the well with Sparky and Twinkle by her side. 'I'm glad we could help others and make things right,' Lily said with a smile. 'That's the true magic of friendship and kindness,' Twinkle replied.\n\nAnd with that heartwarming message, Lily and her friends bid the magical wishing well goodnight, knowing that they had made a difference in the world.",
+      "moral": "The power of kindness and friendship can overcome any challenge and bring peace and harmony to the world.",
+      "word_count": 335
+    },
+    "evaluation": {
+      "pass": true,
+      "safety_passed": true,
+      "reason": "",
+      "scores": {
+        "bedtime_readiness": 9,
+        "creative_spark": 7,
+        "story_quality": 8,
+        "age_readability": 8.5
+      },
+      "overall": 8,
+      "feedback": "A heartwarming and well-told story with a strong moral message.",
+      "length_check": {
+        "word_count": 335,
+        "estimated_read_time": 2.7,
+        "acceptable": false,
+        "target_range": "500-800 words",
+        "feedback": "Too short (335 words). Aim for 500-800 words for a 5-7 minute bedtime read."
+      }
+    }
+  },
+  {
+    "id": 21,
+    "timestamp": "2025-08-04T21:21:56.149951",
+    "user_request": "a famous painter whose paintings come to life",
+    "user_liked": true,
+    "story": {
+      "title": "The Magical Paintbrush",
+      "content": "Once upon a time in the bustling town of Brightsville, there lived a young girl named Lily. Lily was a creative and determined artist who spent hours in her room painting colorful masterpieces. Her best friend, Emma, was always by her side, cheering her on and joining her on artistic adventures.\n\nOne day, while exploring an old art supply store, Lily stumbled upon a dusty paintbrush that shimmered with a mysterious light.\n\nIntrigued by its enchanting power, Lily decided to take it home and give it a try. As she began to paint, something magical happened - her paintings started to come alive! A majestic unicorn leaped off the canvas, and a swirling galaxy took shape before her eyes. Amazed by this newfound ability, Lily continued to paint, each stroke bringing more wonder and joy into her world.\n\nHowever, not everything was smooth sailing. A mischievous paintbrush fairy named Pixie had taken a liking to Lily's creations and started causing chaos with her unpredictable magic. Despite the challenges, Lily persevered with the help of her wise old art teacher, Mr.\n\nSmith, who guided her in harnessing her newfound powers. Through trials and triumphs, Lily learned the true power of her art and the magic within her. In the end, she discovered that creativity and imagination were the keys to unlocking endless possibilities.\n\nAs Lily's paintings came to life, they sparked joy and adventure in her world, bringing her closer to her friends and the wonders of her own imagination. The story ends with a heartwarming moment of friendship and discovery, leaving Lily and her friends feeling inspired and enchanted.",
+      "moral": "The power of creativity and imagination can unlock endless possibilities and bring joy and wonder into our lives.",
+      "word_count": 269
+    },
+    "evaluation": {
+      "pass": true,
+      "safety_passed": true,
+      "reason": "",
+      "scores": {
+        "bedtime_readiness": 9,
+        "creative_spark": 7,
+        "story_quality": 8,
+        "age_readability": 8
+      },
+      "overall": 8,
+      "feedback": "A magical and imaginative story with a strong message about creativity and imagination.",
+      "length_check": {
+        "word_count": 269,
+        "estimated_read_time": 2.2,
+        "acceptable": false,
+        "target_range": "500-800 words",
+        "feedback": "Too short (269 words). Aim for 500-800 words for a 5-7 minute bedtime read."
+      }
+    }
+  },
+  {
+    "id": 22,
+    "timestamp": "2025-08-04T21:27:00.083261",
+    "user_request": "a kid who has a father with gambling addition",
+    "user_liked": true,
+    "story": {
+      "title": "Lily's Resilient Heart",
+      "content": "Once upon a time, in a cozy little house at the end of a quiet street, lived a young girl named Lily. Lily's bedroom was a magical place, filled with her favorite stuffed animals and colorful drawings on the walls. Her most loyal companion was her pet dog, Sparky, who always slept at the foot of her bed.\n\nLily's mother was a kind and supportive woman, always ready with a hug and a smile. And her grandmother, a wise old woman with twinkling eyes, lived with them and filled the house with warmth and love. But Lily's heart was heavy because her father had a gambling addiction.\n\nShe could see the worry in her mother's eyes and the sadness in her grandmother's smile. Determined to help her family, Lily became a creative problem-solver. One night, as she lay in bed, she whispered to Sparky, 'I have an idea, boy.\n\nWe're going to help Dad.' The next day, Lily sat down with her grandmother and shared her plan.\n\nTogether, they came up with a clever way to gently encourage her father to seek treatment for his addiction. Lily's mother was touched by her daughter's resilience and determination. 'You have a heart of gold, Lily,' she whispered, tears of pride in her eyes.\n\nAnd so, with love and support from her family, Lily's plan worked. Her father sought help and slowly began to heal. The house was filled with laughter and joy once more.\n\nLily's heart swelled with happiness as she hugged her family tight. 'We did it, Sparky,' she whispered, feeling grateful for the love that surrounded her. And as the stars twinkled outside her window, Lily drifted off to sleep, knowing that no matter what challenges came their way, they would face them together, with love and resilience.\n\nThe end.",
+      "moral": "The power of love and resilience within a family can help overcome any challenge.",
+      "word_count": 300
+    },
+    "evaluation": {
+      "pass": true,
+      "safety_passed": true,
+      "reason": "",
+      "scores": {
+        "bedtime_readiness": 9,
+        "creative_spark": 7,
+        "story_quality": 8,
+        "age_readability": 8
+      },
+      "overall": 8,
+      "feedback": "A heartwarming and well-told story with a good balance of creativity and bedtime readiness.",
+      "length_check": {
+        "word_count": 300,
+        "estimated_read_time": 2.4,
+        "acceptable": false,
+        "target_range": "500-800 words",
+        "feedback": "Too short (300 words). Aim for 500-800 words for a 5-7 minute bedtime read."
+      }
+    }
   }
 ]
