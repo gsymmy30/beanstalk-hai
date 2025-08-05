@@ -42,11 +42,6 @@ Beanstalk AI is an intelligent bedtime story generator that creates personalized
 ## 📖 Example Usage
 
 ```
-## 🎮 Quick Flow Preview
-
-```bash
-$ python main.py
-
 🌱✨ BEANSTALK AI ✨🌱
 Magical Bedtime Stories for Kids 5-10
 
