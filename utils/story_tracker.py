@@ -5,7 +5,7 @@ from typing import Dict, List
 
 class StoryTracker:
     """
-    Tracks generated stories and their evaluation scores.
+    Tracks generated stories with new evaluation schema and user feedback.
     Stores data in JSON and generates HTML reports.
     """
     
@@ -28,21 +28,26 @@ class StoryTracker:
         with open(self.storage_file, 'w', encoding='utf-8') as f:
             json.dump(self.stories, f, indent=2, ensure_ascii=False)
     
-    def add_story(self, story: Dict, evaluation: Dict, user_request: str = ""):
+    def add_story(self, story: Dict, evaluation: Dict, user_request: str = "", user_liked: bool = False):
         """
-        Add a new story and its evaluation to tracking
+        Add a new story with evaluation and user feedback
         
         Args:
             story: {"title": str, "story": str, "moral": str}
-            evaluation: Full judge evaluation results
-            user_request: Original user request that generated this story
+            evaluation: Full judge evaluation results with new schema
+            user_request: Original user request
+            user_liked: Whether user liked the story (Y/N)
         """
         
-        # Create story record
+        # Extract scores safely
+        scores = evaluation.get("scores", {})
+        
+        # Create story record with new schema
         story_record = {
             "id": len(self.stories) + 1,
             "timestamp": datetime.now().isoformat(),
             "user_request": user_request,
+            "user_liked": user_liked,
             "story": {
                 "title": story.get("title", "Untitled"),
                 "content": story.get("story", ""),
@@ -50,24 +55,27 @@ class StoryTracker:
                 "word_count": len(story.get("story", "").split())
             },
             "evaluation": {
+                "pass": evaluation.get("pass", False),
                 "safety_passed": evaluation.get("safety_passed", True),
-                "character_connection": evaluation.get("character_connection", 0),
-                "bedtime_appropriate": evaluation.get("bedtime_appropriate", 0),
-                "storytelling_craft": evaluation.get("storytelling_craft", 0),
-                "age_appropriate": evaluation.get("age_appropriate", 0),
-                "overall_score": evaluation.get("overall_score", 0),
-                "passed": evaluation.get("passed", False),
-                "length_check": evaluation.get("length_check", {}),
-                "feedback": evaluation.get("feedback", {})
+                "reason": evaluation.get("reason", ""),
+                "scores": {
+                    "bedtime_readiness": scores.get("bedtime_readiness", 0),
+                    "creative_spark": scores.get("creative_spark", 0),
+                    "story_quality": scores.get("story_quality", 0),
+                    "age_readability": scores.get("age_readability", 0)
+                },
+                "overall": evaluation.get("overall", 0),
+                "feedback": evaluation.get("feedback", ""),
+                "length_check": evaluation.get("length_check", {})
             }
         }
         
         self.stories.append(story_record)
         self._save_stories()
-        print(f"Story #{story_record['id']} saved to {self.storage_file}")
+        print(f"\n📝 Story #{story_record['id']} saved to {self.storage_file}")
     
     def generate_html_report(self, output_file: str = "story_report.html"):
-        """Generate HTML report of all tracked stories"""
+        """Generate HTML report with new schema"""
         
         if not self.stories:
             print("No stories to display in report")
@@ -75,7 +83,10 @@ class StoryTracker:
         
         # Calculate summary stats
         total_stories = len(self.stories)
-        avg_score = sum(s["evaluation"]["overall_score"] for s in self.stories) / total_stories
+        avg_score = sum(s["evaluation"]["overall"] for s in self.stories) / total_stories
+        liked_count = sum(1 for s in self.stories if s.get("user_liked", False))
+        liked_pct = (liked_count / total_stories) * 100
+        passed_count = sum(1 for s in self.stories if s["evaluation"]["pass"])
         
         html_content = f"""
 <!DOCTYPE html>
@@ -138,6 +149,13 @@ class StoryTracker:
             font-size: 0.9em;
             opacity: 0.9;
         }}
+        .user-feedback {{
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            font-weight: bold;
+        }}
         .scores {{
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -157,6 +175,21 @@ class StoryTracker:
             font-size: 1.5em;
             font-weight: bold;
             color: #667eea;
+        }}
+        .pass-badge {{
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }}
+        .pass-badge.passed {{
+            background: #d4edda;
+            color: #155724;
+        }}
+        .pass-badge.failed {{
+            background: #f8d7da;
+            color: #721c24;
         }}
         .story-content {{
             padding: 20px;
@@ -185,20 +218,19 @@ class StoryTracker:
             border-radius: 5px;
             border-left: 4px solid #ffc107;
         }}
-        .feedback h4 {{
-            margin: 0 0 10px 0;
-            color: #856404;
-        }}
-        .feedback-item {{
-            margin: 5px 0;
-            font-size: 0.9em;
+        .safety-failed {{
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
         }}
     </style>
 </head>
 <body>
     <div class="header">
         <h1>🌱 Beanstalk AI Story Report</h1>
-        <p>Generated bedtime stories and their quality scores</p>
+        <p>Generated bedtime stories with quality evaluation</p>
     </div>
     
     <div class="stats">
@@ -210,15 +242,31 @@ class StoryTracker:
             <div class="stat-number">{avg_score:.1f}/10</div>
             <div>Average Score</div>
         </div>
+        <div class="stat-card">
+            <div class="stat-number">{liked_pct:.0f}%</div>
+            <div>User Liked</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{passed_count}/{total_stories}</div>
+            <div>Stories Passed</div>
+        </div>
     </div>
 """
         
         # Add each story
         for story in reversed(self.stories):  # Show newest first
             eval_data = story["evaluation"]
+            scores = eval_data.get("scores", {})
             
             # Format timestamp
             timestamp = datetime.fromisoformat(story["timestamp"]).strftime("%Y-%m-%d %H:%M")
+            
+            # User feedback badge
+            user_feedback = "👍 Liked" if story.get("user_liked", False) else "👎 Not Liked"
+            
+            # Pass/Fail badge
+            pass_status = "passed" if eval_data["pass"] else "failed"
+            pass_text = "✅ PASSED" if eval_data["pass"] else "❌ FAILED"
             
             html_content += f"""
     <div class="story-card">
@@ -226,32 +274,50 @@ class StoryTracker:
             <div class="story-title">#{story["id"]}: {story["story"]["title"]}</div>
             <div class="story-meta">
                 Generated: {timestamp} | Request: "{story["user_request"]}" | Words: {story["story"]["word_count"]}
+                <span class="user-feedback">{user_feedback}</span>
             </div>
         </div>
-        
+"""
+            
+            # Safety check
+            if not eval_data.get("safety_passed", True):
+                html_content += f"""
+        <div class="safety-failed">
+            🛡️ SAFETY FAILED: {eval_data.get("reason", "Unknown safety issue")}
+        </div>
+"""
+            else:
+                # Show scores
+                html_content += f"""
         <div class="scores">
             <div class="score-item">
-                <div class="score-label">Character Connection</div>
-                <div class="score-value">{eval_data["character_connection"]}/10</div>
+                <div class="score-label">Bedtime Readiness</div>
+                <div class="score-value">{scores.get("bedtime_readiness", 0)}/10</div>
             </div>
             <div class="score-item">
-                <div class="score-label">Bedtime Appropriate</div>
-                <div class="score-value">{eval_data["bedtime_appropriate"]}/10</div>
+                <div class="score-label">Creative Spark</div>
+                <div class="score-value">{scores.get("creative_spark", 0)}/10</div>
             </div>
             <div class="score-item">
-                <div class="score-label">Storytelling Craft</div>
-                <div class="score-value">{eval_data["storytelling_craft"]}/10</div>
+                <div class="score-label">Story Quality</div>
+                <div class="score-value">{scores.get("story_quality", 0)}/10</div>
             </div>
             <div class="score-item">
-                <div class="score-label">Age Appropriate</div>
-                <div class="score-value">{eval_data["age_appropriate"]}/10</div>
+                <div class="score-label">Age Readability</div>
+                <div class="score-value">{scores.get("age_readability", 0)}/10</div>
             </div>
             <div class="score-item">
                 <div class="score-label">Overall Score</div>
-                <div class="score-value">{eval_data["overall_score"]}/10</div>
+                <div class="score-value">{eval_data.get("overall", 0)}/10</div>
+            </div>
+            <div class="score-item">
+                <div class="score-label">Status</div>
+                <div><span class="pass-badge {pass_status}">{pass_text}</span></div>
             </div>
         </div>
-        
+"""
+            
+            html_content += f"""
         <div class="story-content">
             <div class="story-text">{story["story"]["content"]}</div>
             <div class="moral"><strong>Moral:</strong> {story["story"]["moral"]}</div>
@@ -259,14 +325,11 @@ class StoryTracker:
             
             # Add feedback if available
             if eval_data.get("feedback"):
-                html_content += """
+                html_content += f"""
             <div class="feedback">
-                <h4>Judge Feedback:</h4>
+                <strong>Judge Feedback:</strong> {eval_data["feedback"]}
+            </div>
 """
-                for dimension, comment in eval_data["feedback"].items():
-                    html_content += f'<div class="feedback-item"><strong>{dimension.replace("_", " ").title()}:</strong> {comment}</div>'
-                
-                html_content += "</div>"
             
             html_content += """
         </div>
@@ -285,17 +348,19 @@ class StoryTracker:
         print(f"HTML report generated: {output_file}")
     
     def get_stats(self) -> Dict:
-        """Get summary statistics"""
+        """Get summary statistics with user feedback"""
         if not self.stories:
-            return {"total": 0, "passed": 0, "average_score": 0, "pass_rate": 0}
+            return {"total": 0, "passed": 0, "average_score": 0, "pass_rate": 0, "liked_percentage": 0}
         
         total = len(self.stories)
-        passed = sum(1 for s in self.stories if s["evaluation"]["passed"])
-        avg_score = sum(s["evaluation"]["overall_score"] for s in self.stories) / total
+        passed = sum(1 for s in self.stories if s["evaluation"]["pass"])
+        avg_score = sum(s["evaluation"]["overall"] for s in self.stories) / total
+        liked = sum(1 for s in self.stories if s.get("user_liked", False))
         
         return {
             "total": total,
             "passed": passed,
             "average_score": round(avg_score, 2),
-            "pass_rate": round((passed / total) * 100, 1)
+            "pass_rate": round((passed / total) * 100, 1),
+            "liked_percentage": round((liked / total) * 100, 0)
         }

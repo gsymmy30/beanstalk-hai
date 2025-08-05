@@ -5,9 +5,10 @@ This will evolve as we build more agents.
 
 from typing import Dict
 
+
 class InputValidationPrompts:
     """Prompts for input validation and processing"""
-    
+
     @staticmethod
     def validation_prompt(user_input: str) -> str:
         return f"""
@@ -23,6 +24,7 @@ Determine if this is a meaningful story request by considering:
 EDGE CASES TO HANDLE:
 - Random gibberish like "sdfdfgg" = INVALID
 - Single words like "dragon" = VALID (expand to "A story about a dragon")
+- Anything that is not age-friendly for children (ages 5-10): INVALID
 - Inappropriate content = INVALID (gently redirect)
 - Very vague like "something fun" = VALID (can work with this)
 - Copyrighted characters like "Spider-Man" = VALID but replace with "a superhero"
@@ -39,145 +41,122 @@ Respond ONLY with valid JSON:
 
 Examples:
 Input: "sdfdfgg" → {{"valid": false, "story_elements": "", "suggestion": "I didn't quite catch that! Try something like: 'A story about a friendly robot who learns to paint'"}}
-
 Input: "dragon" → {{"valid": true, "story_elements": "A story about a dragon", "suggestion": ""}}
-
 Input: "my cat died" → {{"valid": false, "story_elements": "", "suggestion": "Let's create something happy for bedtime! How about: 'A story about a cat who goes on a magical adventure'?"}}
 
 Now analyze: "{user_input}"
 """
+
 
 class StoryGenerationPrompts:
     """Prompts for two-phase story generation"""
 
     @staticmethod
     def generate_outline_prompt(story_request: str) -> str:
-        return f"""
-Create a bedtime story outline for ages 5-10 based on: "{story_request}"
+        return f"""You are an expert at creating imaginative outlines for children stories.
+You are an imaginative story writer who has written 100s of popular stories that children aged 5-10 love reading at bedtime. 
+You are given this - {story_request}. You need to generate an outline.
 
-Design a story with:
-- The protagonist from "{story_request}" (age 5-10 or equivalent in their species)
-- EXACTLY 2 helper characters (no more, no less)
-- A problem that needs solving
-- EXACTLY 3 key events
-- Concrete actions leading to resolution
-- Leading to peaceful sleep
+STEP 1
+- Come up with a overall theme/arc that aligns with the request (example - friendship, adventure, mystery etc)
+- Use any character from the request as the protagonist or generate a protagonist and their characteristics
+- generate side characters and their traits
 
-Return this EXACT JSON structure with ALL fields filled:
-
-{{
-    "protagonist": {{
-        "name": "character name",
-        "age": "5-10 or young [species]",
-        "personality": "key trait",
-        "type": "human/dragon/mouse/etc"
-    }},
-    "helpers": [
-        {{"name": "first helper", "type": "species", "role": "their role"}},
-        {{"name": "second helper", "type": "species", "role": "their role"}}
-    ],
-    "setting": "location",
-    "conflict": "problem",
-    "key_events": [
-        "first event",
-        "second event",
-        "third event"
-    ],
-    "journey": "what happens",
-    "resolution": "how it ends peacefully",
-    "theme": "lesson"
-}}
-
-Return ONLY the complete JSON above with your content filled in. No explanations.
-"""
+STEP 2
+- Now based on the theme and characters, think about what would make an engaging bedtime story and provide an outline in terms - opening, key events, closing, climax etc. (focus on bedtime and appropriateness for ages 5-10). The outline should have a major plot, key events
+- Imagine you are providing this outline to your writer and give instruction on how to create a beautiful 500 word story from the outline. Give clear instruction around how make the story engaging, visual, detailed, while suitable for bedtime
+- Make sure to provide instruction to make the story very vivid and descriptive
+Respond in JSON:
+{{"outline": "outline that you have come up with", "characters":"characters you think are relevant and their traits", "instruction":"instructions to your writer on how to develop that outline into a great story"}}"""
 
     @staticmethod
     def write_story_from_outline_prompt(outline: Dict) -> str:
-        protagonist = outline.get('protagonist', {})
-        helpers = ', '.join([f"{h['name']} the {h['type']}" for h in outline.get('helpers', [])])
-        
-        return f"""
-Write a complete 800-word bedtime story based on this outline:
+        return f"""You are an expert at writing bedtime stories for children once given an outline
 
-MAIN CHARACTER: {protagonist.get('name')}, age {protagonist.get('age')}, who is {protagonist.get('personality')}
-FRIENDS: {helpers}
-SETTING: {outline.get('setting')}
-PROBLEM: {outline.get('conflict')}
-KEY EVENTS: {outline.get('key_events', outline.get('magical_events', []))}
-WHAT HAPPENS: {outline.get('journey')}
-ENDING: {outline.get('resolution')}
-THEME: {outline.get('theme')}
+Your boss has given you a story outline and some instruction into how you can develop that into a full bedtime story for kids aged 5-10.
+Outline - {outline.get('outline', '')}, Characters - {outline.get('characters', '')}, Instructions - {outline.get('instruction', '')}
 
-STORY REQUIREMENTS:
-• Show SPECIFIC things happening with visual details
-• Include the key events with concrete descriptions
-• Keep the story ACTIVE - show characters doing things
-• Natural dialogue between characters  
-• Gradual calming: exciting events → gentler activities → peaceful sleep
-• eventful story - innovative
-• Final paragraphs: calm bedtime activities (not abstract feelings)
-• Exactly 800 words
+Based on the outline, characters and traits - follow the instructions and develop the outline into a full-fledged bedtime story for kids. You must ensure the story is at least 500 words. 
 
-AVOID:
-• Vague descriptions ("something wonderful happened")
-• Too many feeling words ("heart swelled", "filled with joy")
-• Abstract endings - show actual bedtime routines/activities
-• Rushing through events - develop each one properly
+You must:
+- Follow the principles of good storytelling
+- Develop characters and their arcs
+- Add dialogues to show interaction between the characters as they navigate their journey
+- Be descriptive of situations, challenges, solutions (do not rush or skip over details)
+- Make sure the story ends peacefully and calmly soothes into a bedtime routine
 
-Write an engaging story where interesting things actually happen. Show actions and consequences.
+Once you have developed an initial story, take another look at it and ensure it follows the instructions and is feeling creative and engaging for 5-10 year old. If not, make edits to get it there. 
 
-JSON response:
-{{
-    "title": "story title",
-    "story": "complete 800-word story",
-    "moral": "catchy moral of the story"
-}}
-REMINDER: Return ONLY valid JSON.
-"""
+Once you're satisfied, respond in JSON:
+{{"title":"an apt title for the story", "story":"the full story", "moral":"moral of the story"}}"""
 
     @staticmethod
-    def story_refinement_prompt(original_story: Dict, judge_feedback: Dict, outline: Dict = None) -> str:
-        feedback_lines = []
-        feedback_dict = judge_feedback.get('feedback', {})
-        for dim, feedback in feedback_dict.items():
-            if feedback and isinstance(feedback, str):
-                feedback_lines.append(f"• {feedback}")
-        feedback_text = '\n'.join(feedback_lines) if feedback_lines else "• Enhance character personality\n• Add more sensory details"
-        original_word_count = len(original_story['story'].split())
-        return f"""
-You are a master editor. Edit this bedtime story to address the feedback below.
-
-ORIGINAL STORY: "{original_story['story']}"
-
-FEEDBACK TO ADDRESS:
-{feedback_text}
-
-ADD DIALOGUE throughout the story - characters should talk to each other! Replace narration with conversation where possible
-
-EXPANSION REQUIREMENTS:
-1. ADD more details to existing scenes - don't remove anything
-2. EXPAND character thoughts and feelings
-3. EXTEND descriptions with sensory details (sights, sounds, smells)
-4. DEVELOP dialogue - make conversations more natural and detailed (more back and forth)
-5. ENHANCE transitions between scenes
-6. ELABORATE on the setting and atmosphere
-
-DO NOT: Summarize, condense, or remove any content. Only ADD and ENHANCE.
-
-JSON response:
-{{
-    "title": "{original_story['title']}",
-    "story": "[edited story with improvements]",
-    "moral": "{original_story['moral']}",
-    "improvements": "A brief summary of what was improved"
-}}"""
+    def story_refinement_prompt(
+        original_story: Dict, improvement_suggestion: str
+    ) -> str:
+        return f"""You are a children's story editor and an expert at taking a story and refining it. 
+        You are given this {original_story['story']}. A critic has read it and made a minor suggestion - {improvement_suggestion}.
+        
+        This original story is already good. You just need to address that minor suggestion. Implement the suggestion without changing too much. The end result should not be very different from the input story. 
+        Thin twice about if you have enhanced it or made it worse. Always make it better!
+        Respond in JSON -
+        {{"title": "{original_story['title']}", "story":"the full story", "moral": "{original_story['moral']}"}}"""
 
 
 class JudgePrompts:
     """Streamlined prompts for bedtime story evaluation"""
-    
+
     @staticmethod
-    def safety_evaluation_prompt(story: Dict) -> str:
+    def unified_evaluation_prompt(story: Dict) -> str:
+        """Single prompt that handles both safety and quality evaluation"""
+        return f"""You are an expert evaluator of bedtime stories for children ages 5-10.
+
+Evaluate this story:
+Title: {story['title']}
+Story: {story['story']}
+Moral: {story['moral']}
+
+Step 1: Check for unsafe content:
+- Scary things (monsters, darkness, threats)
+- Violence or danger
+- Unresolved problems
+- Parent separation
+- Incomplete story
+
+If unsafe, return: {{"pass": false, "reason": "[what makes it unsafe]", "scores": null}}
+
+Step 2: Score these (1-10 each, can have decimals too like 7.5 or 8.2):
+- bedtime_readiness: How calming? (8-10=very calming, 5-7=somewhat calm, 1-4=exciting)
+- creative_spark: How original? (1-3=generic/cliche, 4-6=some originality, 7-10=very creative)
+- story_quality: How well told? (1-4=poor, 5-7=decent, 8-10=excellent)
+- age_readability: Good for bedtime? (word count, vocabulary)
+
+Step 3: IMPORTANT RULE
+Look at your scores. Is any score less than 5?
+- If YES: Set pass = false
+- If NO: Set pass = true
+
+Step 4: Provide improvement suggestion
+Write 1-2 specific, actionable sentences on how to improve the story. Focus on the lowest scoring dimension.
+
+Return JSON:
+{{
+  "pass": [true if all scores >= 5, false if any score < 5],
+  "scores": {{
+    "bedtime_readiness": [number],
+    "creative_spark": [number],
+    "story_quality": [number],
+    "age_readability": [number]
+  }},
+  "overall": [average of 4 scores],
+  "feedback": "[one sentence summary]",
+  "improvement": "[1 tangible instructions to the story-writer on what to improve to bump up on what is lacking in the scores]"
+}}
+
+Generic princess/fairy/unicorn stories get creative_spark = 3 or less."""
+
+    @staticmethod
+    def safety_evaluation_prompt(story: Dict) -> str:  # old
         return f"""
 Check if this bedtime story is safe for ages 5-10.
 
@@ -193,11 +172,11 @@ JSON response:
     "passed": true/false,
     "issues": "specific problems if failed, empty if passed"
 }}"""
-    
+
     @staticmethod
-    def detailed_evaluation_prompt(story: Dict, length_analysis: Dict) -> str:
-        word_count = length_analysis.get('word_count', 0)
-        
+    def detailed_evaluation_prompt(story: Dict, length_analysis: Dict) -> str:  # old
+        word_count = length_analysis.get("word_count", 0)
+
         return f"""
 Evaluate this bedtime story for ages 5-10. Be critical but fair.
 
@@ -247,19 +226,26 @@ JSON response:
         "age_appropriate": "What to fix: [specific actionable improvement]"
     }}
 }}"""
-    
+
     @staticmethod
     def refinement_instructions_prompt(scores: Dict) -> str:
         feedback = scores.get("feedback", {})
         length_check = scores.get("length_check", {})
-        
+
         # Identify dimensions below 7.0
         low_dimensions = []
-        for dim in ["character_connection", "bedtime_appropriate", "storytelling_craft", "age_appropriate"]:
+        for dim in [
+            "character_connection",
+            "bedtime_appropriate",
+            "storytelling_craft",
+            "age_appropriate",
+        ]:
             score = scores.get(dim, 0)
             if score < 7.0:
-                low_dimensions.append(f"- {dim.upper()}: {score}/10 - {feedback.get(dim, 'Needs improvement')}")
-        
+                low_dimensions.append(
+                    f"- {dim.upper()}: {score}/10 - {feedback.get(dim, 'Needs improvement')}"
+                )
+
         return f"""
 Based on detailed rubric evaluation, provide specific, actionable refinement instructions.
 
@@ -297,82 +283,47 @@ For AGE APPROPRIATE below 7.0:
 Provide 2-4 specific, actionable instructions focusing on the lowest-scoring dimensions.
 """
 
+
 class QAPrompts:
     """Prompts for Q&A system after story completion"""
-    
+
     @staticmethod
     def generate_questions_prompt(story: Dict) -> str:
         return f"""
-You are generating example questions that curious 5-10 year old children might want to ask after hearing this bedtime story.
+        You are a 5-10 year old child who is an active listener of stories
 
-STORY CONTEXT:
-Title: {story['title']}
-Story: {story['story']}
-Moral: {story['moral']}
+        Your parents just read you this {story['story']}
 
-Generate 3 engaging, story-specific questions that would spark a child's curiosity. Make them:
-
-QUESTION TYPES TO INCLUDE:
-1. A "what" question about story elements (characters, places, objects)
-2. A "why" or "how" question about motivations or story mechanics  
-3. A "what if" or imaginative question that extends the story world
-
-REQUIREMENTS:
-- Specific to THIS story (not generic questions that work for any story)
-- Age-appropriate for 5-10 year olds
-- Encourage imagination and wonder
-- Not too complex or abstract
-- Questions a curious child would actually want to ask
-
-EXAMPLES OF GOOD QUESTIONS:
-- "What do you think Luna the dragon's favorite color of book is?"
-- "How do you think Maya felt when she first saw Luna?"
-- "What other magical creatures might live in the library?"
-
-AVOID:
-- Generic questions that work for any story
-- Questions with obvious answers already in the story
-- Too complex or abstract questions
-- Questions about scary or inappropriate topics
+Your 5-10 year old brain is now curious. You have so many follow up questions from the story. 
+What are some most obvious questions you have from the story or any general questions related to what happened in the story? 
 
 Respond ONLY with valid JSON:
 {{
     "questions": [
-        "First engaging question specific to this story",
-        "Second question about different story aspect", 
-        "Third imaginative question"
+        "first question",
+        "second question not directly related to a story", 
+        "third question"
     ]
 }}
 """
-    
+
     @staticmethod
-    def answer_question_prompt(question: str, story_context: Dict) -> str:
+    def answer_question_prompt(question: str, story: Dict) -> str:
         return f"""
-You are answering a child's question about a bedtime story. Be warm, engaging, and age-appropriate for kids 5-10.
+You are a parent answering a question to your child after you've read them a bedtime story.
 
-STORY CONTEXT:
-Title: {story_context['title']}
-Story: {story_context['story']}
-Moral: {story_context['moral']}
+You just read this story to your child - {story['story']}
+And now your 5-10 year child has some follow up questions.
 
-CHILD'S QUESTION: "{question}"
+They have asked you - {question}
 
-ANSWER GUIDELINES:
-- Keep the magic and wonder of the story alive
-- Be encouraging and positive
-- Use age-appropriate language (5-10 years old)
-- Draw from story details when possible
-- If the answer isn't in the story, use imagination to extend the story world
-- Keep answers concise (2-4 sentences)
-- Maintain the gentle, bedtime-appropriate tone
-- Sometimes turn it back to the child: "What do you think?"
+Use the story context and tell them an answer. 
 
-EXAMPLES OF GOOD ANSWERS:
-Question: "What's Luna's favorite color book?"
-Answer: "Based on how Luna organized books by color, I think she might love the deep blue books about oceans and night skies - just like the color of peaceful dreams! What color books do you think would be your favorite?"
+Make sure you address the answer to a 5-10 child. You can use anything from the story and also invent any information (factually sound) to keep your child happy and satisfied. 
 
-Question: "Are there other dragons in the library?"
-Answer: "Maybe there are! Luna seemed like she had been hiding for a long time, so perhaps there are other shy magical creatures living quietly among the books, waiting for kind friends like Maya to discover them."
+Try to turn these questions into lessons for your child. Be brief. 
 
-Respond with ONLY the answer text (no JSON, no quotes, just the answer).
+If the questions seems completely out of story context, just say that you can only answer questions that are related to this story and don't answer that question. 
+
+Respond with ONLY the answer text (no JSON, no quotes, just the answer)
 """
