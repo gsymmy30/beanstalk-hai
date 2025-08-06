@@ -702,5 +702,37 @@
         "feedback": "Too short (300 words). Aim for 500-800 words for a 5-7 minute bedtime read."
       }
     }
+  },
+  {
+    "id": 23,
+    "timestamp": "2025-08-05T01:34:21.336561",
+    "user_request": "a boy named Pete who loves to play pickleball",
+    "user_liked": true,
+    "story": {
+      "title": "The Pickleball Challenge",
+      "content": "Once upon a time, in a small town, there lived a young boy named Pete. Pete was full of energy and loved to play pickleball. He would spend hours practicing his shots and perfecting his serves at the local pickleball court.\n\nOne sunny afternoon, as Pete was practicing his backhand, he met a kind and supportive girl named Lily. Lily was also passionate about pickleball and the two quickly became best friends. They would practice together every day, cheering each other on and helping each other improve.\n\nPete admired Lily's kindness and support, and Lily appreciated Pete's determination and energy. As they spent more time together, their friendship grew stronger. One day, a new player named Max showed up at the court.\n\nMax was competitive and boastful, always bragging about his pickleball skills. Pete felt challenged by Max's arrogance and decided to enter a pickleball tournament to prove himself. The day of the tournament arrived, and Pete found himself facing Max in the final match.\n\nThe game was intense, with both players giving their all. Pete's determination and teamwork with Lily helped him stay focused and calm. Just when it seemed like Max was going to win, a sudden rainstorm hit the court, making the game even more challenging.\n\nWith Lily's encouragement and quick thinking, Pete adjusted his strategy and managed to win the match, defeating Max and becoming the champion. The crowd cheered as Pete and Lily celebrated their victory, their friendship stronger than ever. As the sun set, Pete and Lily walked home together, grateful for each other's support and looking forward to many more pickleball adventures together.",
+      "moral": "The moral of the story is that true friendship and teamwork can help overcome any challenge. By supporting each other and working together, friends can achieve great things.",
+      "word_count": 270
+    },
+    "evaluation": {
+      "pass": true,
+      "safety_passed": true,
+      "reason": "",
+      "scores": {
+        "bedtime_readiness": 8,
+        "creative_spark": 6,
+        "story_quality": 7,
+        "age_readability": 9
+      },
+      "overall": 7.5,
+      "feedback": "A well-told story with a good balance of excitement and calming elements.",
+      "length_check": {
+        "word_count": 270,
+        "estimated_read_time": 2.2,
+        "acceptable": false,
+        "target_range": "500-800 words",
+        "feedback": "Too short (270 words). Aim for 500-800 words for a 5-7 minute bedtime read."
+      }
+    }
   }
 ]

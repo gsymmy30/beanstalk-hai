@@ -28,8 +28,8 @@ def call_model(prompt: str, max_tokens=3000, temperature=0.7) -> str:
 
 def show_menu():
     print("\n" + "=" * 50)
-    print("🌱✨ BEANSTALK AI ✨🌱".center(50))
-    print("Magical Bedtime Stories for Kids 5-10".center(50))
+    print("🌱 BEANSTALK AI 🌱".center(50))
+    print("Bedtime Stories for Kids 5-10".center(50))
     print("=" * 50)
     print("\n  📖  1. Create a new story")
     print("  📊  2. View story report")
@@ -154,9 +154,6 @@ def main():
     judge_system = JudgeSystem(call_model)
     qa_agent = QAAgent(call_model)
     story_tracker = StoryTracker()
-
-    print("\n🌟 Welcome to Beanstalk AI!")
-    print("   Where bedtime stories come to life...")
 
     while True:
         show_menu()
