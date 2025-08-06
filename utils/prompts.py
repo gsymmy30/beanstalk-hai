@@ -65,7 +65,7 @@ STEP 1
 STEP 2
 - Now based on the theme and characters, think about what would make an engaging bedtime story and provide an outline in terms - opening, key events, closing, climax etc. (focus on bedtime and appropriateness for ages 5-10). The outline should have a major plot, key events
 - Imagine you are providing this outline to your writer and give instruction on how to create a beautiful 500 word story from the outline. Give clear instruction around how make the story engaging, visual, detailed, while suitable for bedtime
-- Make sure to provide instruction to make the story very vivid and descriptive
+- Make sure to provide instruction to make the story very vivid and descriptive and to write dialogues. 
 Respond in JSON:
 {{"outline": "outline that you have come up with", "characters":"characters you think are relevant and their traits", "instruction":"instructions to your writer on how to develop that outline into a great story"}}"""
 
@@ -76,7 +76,7 @@ Respond in JSON:
 Your boss has given you a story outline and some instruction into how you can develop that into a full bedtime story for kids aged 5-10.
 Outline - {outline.get('outline', '')}, Characters - {outline.get('characters', '')}, Instructions - {outline.get('instruction', '')}
 
-Based on the outline, characters and traits - follow the instructions and develop the outline into a full-fledged bedtime story for kids. You must ensure the story is at least 500 words. 
+Based on the outline, characters and traits - follow the instructions and develop the outline into a full-fledged bedtime story for kids with atleast 500 words.
 
 You must:
 - Follow the principles of good storytelling
@@ -85,10 +85,11 @@ You must:
 - Be descriptive of situations, challenges, solutions (do not rush or skip over details)
 - Make sure the story ends peacefully and calmly soothes into a bedtime routine
 
-Once you have developed an initial story, take another look at it and ensure it follows the instructions and is feeling creative and engaging for 5-10 year old. If not, make edits to get it there. 
+Once you have developed an initial story, take another look at it and ensure it follows the instructions and is feeling creative and engaging for 5-10 year old. If not, make edits to get it there.
+Ensure there are atleast 3-4 dialogues.
 
 Once you're satisfied, respond in JSON:
-{{"title":"an apt title for the story", "story":"the full story", "moral":"moral of the story"}}"""
+{{"title":"an apt title for the story", "story":"the full story (with dialogues) with atleast 500 words", "moral":"moral of the story"}}"""
 
     @staticmethod
     def story_refinement_prompt(
@@ -97,10 +98,12 @@ Once you're satisfied, respond in JSON:
         return f"""You are a children's story editor and an expert at taking a story and refining it. 
         You are given this {original_story['story']}. A critic has read it and made a minor suggestion - {improvement_suggestion}.
         
-        This original story is already good. You just need to address that minor suggestion. Implement the suggestion without changing too much. The end result should not be very different from the input story. 
-        Thin twice about if you have enhanced it or made it worse. Always make it better!
+        This original story is already good. You just need to address that minor suggestion. Implement the suggestion without changing too much. The end result should not be very different from the input story.
+        Ensure it is 500 words. 
+        Ensure there are atleast 3-4 dialogues.
+        Think twice about if you have enhanced it or made it worse. Always make it better! 
         Respond in JSON -
-        {{"title": "{original_story['title']}", "story":"the full story", "moral": "{original_story['moral']}"}}"""
+        {{"title": "{original_story['title']}", "story":"the full refined story (with dialogues) with atleast 500 words", "moral": "{original_story['moral']}"}}"""
 
 
 class JudgePrompts:
@@ -317,7 +320,7 @@ And now your 5-10 year child has some follow up questions.
 
 They have asked you - {question}
 
-Use the story context and tell them an answer. 
+Use the story context and respond with 2-3 line answer. 
 
 Make sure you address the answer to a 5-10 child. You can use anything from the story and also invent any information (factually sound) to keep your child happy and satisfied. 
 

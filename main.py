@@ -9,6 +9,15 @@ from utils.story_tracker import StoryTracker
 
 load_dotenv()
 
+"""
+Before submitting the assignment, describe here in a few sentences what you would have built next if you spent 2 more hours on this project:
+
+With 2 additional hours, I would focus on three key areas:
+1. **Expanded Evals**: Build comprehensive evals for each component (Input Handler, QA Agent, Story Refiner) beyond just the story generator. Expand the evaluation dataset from 20 to 100+ stories with diverse quality levels and edge cases. Analyze the data to identify patterns in what makes stories successful and iterate on the prompts based on these insights.
+2. **Multi-Modal Voice Support**: Implement text-to-speech specifically optimized for bedtime stories. The voice component would focus on prosody and pacing that mimics a parent's soothing bedtime reading style - slower tempo, gentle intonation, and natural pauses that promote calmness. This addresses the reality that bedtime stories are typically read aloud.
+3. **Personalization & Memory**: Add persistent character profiles where children can create avatars of themselves and their friends/pets to star in stories. Build a memory system that tracks favorite characters and allows story series with recurring protagonists. This would require a proper frontend for profile management, but would significantly increase engagement as children love seeing themselves and familiar characters in their stories.
+"""
+
 
 def call_model(prompt: str, max_tokens=3000, temperature=0.7) -> str:
     openai.api_key = os.getenv("OPENAI_API_KEY")

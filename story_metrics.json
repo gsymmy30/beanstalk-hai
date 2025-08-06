@@ -734,5 +734,229 @@
         "feedback": "Too short (270 words). Aim for 500-800 words for a 5-7 minute bedtime read."
       }
     }
+  },
+  {
+    "id": 24,
+    "timestamp": "2025-08-05T23:18:45.908195",
+    "user_request": "a boy named Pete who loves to play pickleball",
+    "user_liked": false,
+    "story": {
+      "title": "The Pickleball Pals",
+      "content": "Once upon a time, in a small town nestled among lush green woods, there lived a young boy named Pete. Pete was a bundle of energy, always ready for an adventure. But what he loved most in the world was playing pickleball. He would spend hours practicing his shots and perfecting his serves at the local court. One day, while exploring the woods near his house, Pete stumbled upon a hidden pickleball court. It was overgrown with vines and bushes, but Pete could see the potential it held. Excited, he decided to bring it back to life. \n\nAs Pete started cleaning up the court, he heard a soft voice behind him. Turning around, he saw Maggie, a shy girl with a racquet in her hand. Maggie was also passionate about pickleball but had never found anyone to play with. Pete and Maggie soon struck up a conversation, bonding over their shared love for the sport. They decided to team up and work together to restore the hidden court. \n\nDays turned into weeks as Pete and Maggie spent every afternoon practicing on the court. They faced challenges along the way – from stubborn weeds to tricky shots – but they never gave up. With each practice session, their skills improved, and their friendship grew stronger. \n\nFinally, the day of the local pickleball tournament arrived. Pete and Maggie were nervous but determined to give it their all. As they stepped onto the court, they knew they had each other's backs. With seamless teamwork and unwavering perseverance, they made their way through the tournament, surprising everyone with their talent. In the final match, Pete and Maggie faced a tough opponent, but they didn't let it shake their confidence. With a combination of skill and teamwork, they emerged victorious, holding the winner's trophy high. \n\nAs they celebrated their victory, Pete and Maggie knew that their friendship was the real prize. They had learned that true friends support each other through thick and thin, and that together, they could overcome any challenge. With smiles on their faces, they walked back home, the setting sun casting a warm glow on their unforgettable journey. And as they drifted off to sleep that night, they knew that they had found a friend for life in each other.",
+      "moral": "The moral of the story is that friendship and perseverance can help you overcome any challenge. By working together and supporting each other, you can achieve great things and create lasting memories.",
+      "word_count": 379
+    },
+    "evaluation": {
+      "pass": true,
+      "safety_passed": true,
+      "reason": "",
+      "scores": {
+        "bedtime_readiness": 8,
+        "creative_spark": 6,
+        "story_quality": 8,
+        "age_readability": 9
+      },
+      "overall": 7.75,
+      "feedback": "A heartwarming story with a good balance of excitement and calming elements, suitable for bedtime.",
+      "length_check": {
+        "word_count": 379,
+        "estimated_read_time": 3.0,
+        "acceptable": false,
+        "target_range": "500-800 words",
+        "feedback": "Too short (379 words). Aim for 500-800 words for a 5-7 minute bedtime read."
+      }
+    }
+  },
+  {
+    "id": 25,
+    "timestamp": "2025-08-05T23:25:36.973107",
+    "user_request": "a boy named Pete who loves to play pickleball",
+    "user_liked": true,
+    "story": {
+      "title": "The Pickleball Champions",
+      "content": "Once upon a time, in a small town, there lived a young boy named Pete. Pete was a determined and energetic kid who loved playing pickleball. One sunny day, he discovered the sport while passing by the local community center.\n\nAs soon as he picked up a paddle and hit the ball, he was hooked. Pete practiced day and night, always looking for ways to improve his skills. His best friend Lily, who was supportive and creative, cheered him on every step of the way.\n\nPete's coach, Mr. Johnson, was patient and encouraging, guiding him through the ins and outs of the game. One day, a big pickleball tournament was announced in town.\n\nPete was thrilled and decided to participate. As the tournament progressed, Pete faced tough opponents and challenging situations. During a crucial match, Pete found himself trailing behind.\n\nFeeling discouraged, he looked towards Lily and Mr. Johnson for support. Lily shouted encouraging words from the sidelines, while Mr.\n\nJohnson reminded Pete to stay focused and calm. With their help, Pete managed to turn the game around and secure a spot in the finals. In the final match, Pete and Lily found themselves up against a formidable duo.\n\nThe opponents were skilled and had a strong bond. Pete and Lily knew that they had to work together and show the true meaning of friendship and teamwork. With synchronized moves and seamless coordination, Pete and Lily played their hearts out.\n\nThe crowd cheered as they witnessed the power of unity and collaboration on the pickleball court. Just when it seemed like all hope was lost, a sudden gust of wind blew the ball off course, causing their opponents to make a crucial mistake. Seizing the opportunity, Pete and Lily executed a brilliant play and won the match.\n\nAs they celebrated their victory, Pete realized the true value of friendship and teamwork. It wasn't just about winning but about supporting each other and working together towards a common goal. Pete thanked Lily and Mr.\n\nJohnson for their unwavering support and guidance. From that day on, Pete knew that no matter what challenges came his way, as long as he had his friends by his side, he could overcome anything. And so, the young pickleball champions continued to play and inspire others with their story of friendship and teamwork.",
+      "moral": "The moral of the story is that friendship and teamwork are invaluable assets that can help individuals overcome challenges and achieve success. By working together and supporting each other, great things can be accomplished.",
+      "word_count": 387
+    },
+    "evaluation": {
+      "pass": true,
+      "safety_passed": true,
+      "reason": "",
+      "scores": {
+        "bedtime_readiness": 9,
+        "creative_spark": 6.5,
+        "story_quality": 8,
+        "age_readability": 7
+      },
+      "overall": 7.375,
+      "feedback": "A heartwarming story about friendship and teamwork with good storytelling and calming bedtime readiness.",
+      "length_check": {
+        "word_count": 387,
+        "estimated_read_time": 3.1,
+        "acceptable": false,
+        "target_range": "500-800 words",
+        "feedback": "Too short (387 words). Aim for 500-800 words for a 5-7 minute bedtime read."
+      }
+    }
+  },
+  {
+    "id": 26,
+    "timestamp": "2025-08-05T23:28:01.449554",
+    "user_request": "a boy named Pete who loves to play pickleball",
+    "user_liked": false,
+    "story": {
+      "title": "The Pickleball Tournament",
+      "content": "Once upon a time in a small town, there lived a boy named Pete who had a passion for pickleball. Pete was adventurous, determined, and always looking for new challenges. He spent hours practicing his skills on the local court, where he met his best friend Lily.\n\nLily was kind and supportive, always cheering Pete on as he perfected his game. However, not everyone in town was as friendly as Lily. Pete's rival, Max, was competitive and arrogant.\n\nMax always tried to outdo Pete on the court, making their matches intense and challenging. One day, Pete decided to organize a pickleball tournament in town.\n\nHe was excited to showcase his skills and introduce his friends to the sport. Lily immediately agreed to be Pete's partner for the tournament, and they started training together. As the tournament day arrived, Pete and Lily faced off against Max and his partner in the final match.\n\nThe court was buzzing with excitement as the teams battled it out for the championship. Pete and Lily showed great teamwork and determination, surprising everyone with their skills. The match was tense, with each team giving their all to win.\n\nThe sound of the ball hitting the paddle echoed through the court as the players put on a thrilling display of sportsmanship. In the end, Pete and Lily emerged victorious, winning the tournament and earning the respect of their peers. The town cheered for the triumphant duo, celebrating their friendship and teamwork.\n\nAs the sun set on the pickleball court, Pete, Lily, and even Max shared a moment of camaraderie, realizing that true sportsmanship is about more than just winning. The power of friendship and teamwork had triumphed once again, bringing the town closer together. And so, Pete and Lily continued to play pickleball, not just as partners but as the best of friends.",
+      "moral": "The moral of the story is that true sportsmanship is about friendship and teamwork, not just winning. By working together and supporting each other, we can achieve great things and strengthen our bonds with others.",
+      "word_count": 306
+    },
+    "evaluation": {
+      "pass": true,
+      "safety_passed": true,
+      "reason": "",
+      "scores": {
+        "bedtime_readiness": 8,
+        "creative_spark": 6.5,
+        "story_quality": 8,
+        "age_readability": 7
+      },
+      "overall": 7.375,
+      "feedback": "A well-told story with a good balance of excitement and calming elements.",
+      "length_check": {
+        "word_count": 306,
+        "estimated_read_time": 2.4,
+        "acceptable": false,
+        "target_range": "500-800 words",
+        "feedback": "Too short (306 words). Aim for 500-800 words for a 5-7 minute bedtime read."
+      }
+    }
+  },
+  {
+    "id": 27,
+    "timestamp": "2025-08-05T23:34:44.460682",
+    "user_request": "a boy named Pete who loves to play pickleball",
+    "user_liked": true,
+    "story": {
+      "title": "The Pickleball Champions",
+      "content": "Once upon a time in the town of Sunnyvale, there lived a young boy named Pete who had a passion for playing pickleball. Pete spent hours practicing his shots and perfecting his serves on the local court. His best friend, Lily, was always by his side, cheering him on and offering words of encouragement.\n\nLily was known for her infectious laughter and unwavering support for Pete. Together, they made the perfect team. As the annual pickleball tournament approached, Pete and Lily were filled with excitement and anticipation.\n\nThey knew they had been training hard and were ready to take on the competition. 'We can do this, Pete!' Lily exclaimed with a beaming smile. 'I believe in us!' Pete nodded in agreement, grateful for Lily's constant positivity.\n\nThe day of the tournament arrived, and Pete and Lily found themselves facing tough opponents on the court. With each match, they pushed themselves to their limits, relying on their teamwork and determination to guide them through. 'We can't give up now, Lily,' Pete said, wiping the sweat off his brow.\n\n'We've come too far to quit.' Lily nodded, her eyes shining with determination. In the final match, Pete and Lily found themselves neck and neck with the reigning champions. It was a nail-biting showdown, with each point bringing them closer to victory.\n\nJust when it seemed like all hope was lost, a sudden gust of wind swept through the court, causing the ball to veer off course and land right in front of Pete. With a quick thinking, Pete improvised a new shot, surprising everyone, including himself. The ball sailed over the net and landed perfectly in the corner, winning them the point.\n\nThe crowd erupted into cheers, amazed by Pete's unexpected move. Pete and Lily exchanged a knowing look, realizing that sometimes, thinking outside the box could lead to victory. In the end, Pete and Lily emerged as the new pickleball champions, not only because of their hard work and dedication but also because of their ability to adapt and innovate in the face of challenges.\n\nAs the sun set on Sunnyvale, Pete and Lily walked off the court hand in hand, their hearts full of happiness and their bond stronger than ever. The moral of the story is that with perseverance, teamwork, and a touch of creativity, anything is possible. Pete and Lily's friendship and hard work paid off in the end, teaching them the importance of never giving up and always supporting each other.",
+      "moral": "The moral of the story is that with perseverance and teamwork, anything is possible. Pete and Lily's friendship and hard work paid off in the end, teaching them the importance of never giving up and always supporting each other.",
+      "word_count": 414
+    },
+    "evaluation": {
+      "pass": true,
+      "safety_passed": true,
+      "reason": "",
+      "scores": {
+        "bedtime_readiness": 9,
+        "creative_spark": 7,
+        "story_quality": 8,
+        "age_readability": 8
+      },
+      "overall": 8,
+      "feedback": "A heartwarming and inspiring story with a strong moral lesson, perfect for bedtime.",
+      "length_check": {
+        "word_count": 414,
+        "estimated_read_time": 3.3,
+        "acceptable": false,
+        "target_range": "500-800 words",
+        "feedback": "Too short (414 words). Aim for 500-800 words for a 5-7 minute bedtime read."
+      }
+    }
+  },
+  {
+    "id": 28,
+    "timestamp": "2025-08-05T23:35:44.731502",
+    "user_request": "a girl named Luna and her best friend Max, who happens to be a dragon",
+    "user_liked": false,
+    "story": {
+      "title": "Luna and Max: The Magical Quest",
+      "content": "Once upon a time in a magical land, there lived a young girl named Luna. Luna was known for her courageous spirit, vivid imagination, and kind heart. One day, while exploring the enchanted forest, Luna stumbled upon a hidden cave.\n\nInside the cave, she found a friendly dragon named Max. Max was loyal, adventurous, and always eager to explore new places. Luna and Max instantly became friends, bonding over their shared love for adventure.\n\nThey spent their days exploring the magical world, discovering new wonders and meeting all kinds of creatures. One day, Luna and Max heard about a magical creature in need of help.\n\nWithout hesitation, they set out on a quest to find the creature and offer their assistance. Along the way, they encountered many obstacles and challenges, but with their bravery and teamwork, they overcame each one. As they journeyed through the mystical land, Luna and Max's friendship grew stronger with each passing day.\n\nThey shared stories, laughed together, and supported each other through thick and thin. Finally, after a long and challenging journey, Luna and Max found the magical creature in need. With their combined efforts, they were able to help the creature and bring peace to the land.\n\nThe magical creature thanked Luna and Max for their kindness and bravery, and in return, granted them a special gift - a magical token of friendship that would forever bind them together. As they returned home, Luna and Max knew that their friendship was one that would last a lifetime, no matter where their adventures may take them. And so, under the twinkling stars and the watchful eyes of the moon, Luna and Max settled down for the night, knowing that they had found a true friend in each other.",
+      "moral": "The power of friendship and kindness can overcome any obstacle and lead to magical adventures.",
+      "word_count": 293
+    },
+    "evaluation": {
+      "pass": true,
+      "safety_passed": true,
+      "reason": "",
+      "scores": {
+        "bedtime_readiness": 9,
+        "creative_spark": 7,
+        "story_quality": 8,
+        "age_readability": 8
+      },
+      "overall": 8,
+      "feedback": "A heartwarming and adventurous tale that promotes friendship and kindness.",
+      "length_check": {
+        "word_count": 293,
+        "estimated_read_time": 2.3,
+        "acceptable": false,
+        "target_range": "500-800 words",
+        "feedback": "Too short (293 words). Aim for 500-800 words for a 5-7 minute bedtime read."
+      }
+    }
+  },
+  {
+    "id": 29,
+    "timestamp": "2025-08-05T23:36:25.502623",
+    "user_request": "a boy named Siraj who loved to bowl spin in cricket",
+    "user_liked": false,
+    "story": {
+      "title": "A Magical Adventure",
+      "content": "Once upon a time, there was a curious young explorer named Lily who discovered a hidden forest full of wonders. As she ventured deeper into the forest, she noticed that the trees were not just ordinary trees. They were actually giant talking trees that whispered ancient secrets to those who listened carefully.\n\n'Hello, young explorer,' one tree said in a deep, rumbling voice. 'Welcome to the Enchanted Forest.' Lily's eyes widened in amazement as she realized she had stumbled upon a magical place. 'Thank you for welcoming me,' she replied, her heart filled with excitement.\n\nThe trees guided Lily through the forest, showing her the way to the Fountain of Dreams, a shimmering pool of water that granted wishes to those who believed in its magic. 'Make a wish, dear explorer,' another tree urged her. Lily closed her eyes and whispered her deepest desire.\n\nSuddenly, the forest came alive with twinkling lights and colorful butterflies, as her wish began to come true.\n\n'This is incredible!' Lily exclaimed, her face beaming with joy. 'I never imagined such wonders existed in the world.' The trees chuckled softly, their branches swaying in the gentle breeze. 'There is much more to discover in the Enchanted Forest, young one.\n\nKeep your heart open to the magic that surrounds you.' With a grateful smile, Lily bid farewell to the talking trees and continued her journey through the forest, her spirit lifted by the enchanting experience. As she emerged from the forest, she knew that she would always carry the memory of her magical adventure in her heart. And from that day on, she believed that every day held the possibility of magic.\n\n'Thank you, Enchanted Forest,' she whispered, her eyes shining with wonder. 'I will never forget you.' And with that, Lily set off on her next adventure, eager to explore the endless possibilities that awaited her.",
+      "moral": "Every day holds the possibility of magic.",
+      "word_count": 311
+    },
+    "evaluation": {
+      "pass": true,
+      "safety_passed": true,
+      "reason": "",
+      "scores": {
+        "bedtime_readiness": 9,
+        "creative_spark": 8,
+        "story_quality": 9,
+        "age_readability": 8
+      },
+      "overall": 8.5,
+      "feedback": "A beautifully told and creative story that is highly engaging for bedtime.",
+      "length_check": {
+        "word_count": 311,
+        "estimated_read_time": 2.5,
+        "acceptable": false,
+        "target_range": "500-800 words",
+        "feedback": "Too short (311 words). Aim for 500-800 words for a 5-7 minute bedtime read."
+      }
+    }
+  },
+  {
+    "id": 30,
+    "timestamp": "2025-08-05T23:38:58.356568",
+    "user_request": "a girl named Luna and her best friend Max, who happens to be a dragon",
+    "user_liked": true,
+    "story": {
+      "title": "Luna and Max's Magical Adventure",
+      "content": "Once upon a time in a magical land, there lived a brave and curious girl named Luna. Luna had a best friend who was unlike any other - a friendly dragon named Max. Luna and Max did everything together, from exploring the enchanted forest to catching shooting stars in the night sky.\n\nThey were inseparable. One sunny morning, Luna and Max decided to embark on an exciting journey to the mysterious Crystal Caves. The caves were said to hold a hidden treasure that could only be unlocked by solving a riddle.\n\nLuna and Max set off, their hearts full of excitement and determination. As they journeyed through the forest, they encountered a group of mischievous fairies who tried to trick them with their illusions. But Luna's bravery and Max's loyalty helped them see through the tricks and continue on their path.\n\nWhen they finally reached the Crystal Caves, Luna and Max were faced with the riddle of the ancient guardians. 'To find the treasure, answer me this - what is always in front of you but can't be seen?' After much thought and discussion, Luna and Max realized that the answer was 'the future.' The caves illuminated, revealing a dazzling treasure chest filled with shimmering jewels. Just as they were about to claim their prize, a fearsome monster appeared, blocking their way out.\n\nLuna and Max stood together, their hearts beating as one. 'We can do this, Max,' Luna whispered, her voice filled with determination. 'Together, we are unstoppable.' With Max's fiery breath and Luna's quick thinking, they defeated the monster and emerged from the caves victorious.\n\nAs they made their way back home, Luna and Max knew that their friendship had been tested and proven. They smiled at each other, knowing that no challenge was too great as long as they had each other by their side. And so, Luna and Max's magical adventure came to a close, but their bond grew even stronger.\n\nThe moral of the story is that true friendship knows no bounds and can overcome any obstacle.",
+      "moral": "True friendship knows no bounds and can overcome any obstacle.",
+      "word_count": 342
+    },
+    "evaluation": {
+      "pass": true,
+      "safety_passed": true,
+      "reason": "",
+      "scores": {
+        "bedtime_readiness": 9,
+        "creative_spark": 7,
+        "story_quality": 8,
+        "age_readability": 8
+      },
+      "overall": 8,
+      "feedback": "A well-told and engaging story with a strong moral message.",
+      "length_check": {
+        "word_count": 342,
+        "estimated_read_time": 2.7,
+        "acceptable": false,
+        "target_range": "500-800 words",
+        "feedback": "Too short (342 words). Aim for 500-800 words for a 5-7 minute bedtime read."
+      }
+    }
   }
 ]
