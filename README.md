@@ -2,8 +2,6 @@
 
 **Magical Bedtime Stories for Kids 5-10**
 
-Hippocratic AI Take-Home Assignment 
-
 Beanstalk AI is an intelligent bedtime story generator that creates engaging stories for children. Each story is carefully crafted, evaluated, and refined to ensure it's perfect for bedtime.
 
 ## 🚀 Setup
